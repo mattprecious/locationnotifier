@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+	android:key="preferences">
+	
+	<PreferenceCategory
+		android:key="category_status"
+		android:title="@string/category_status">
+		
+		<Preference
+			android:key="set_destination" 
+			android:title="@string/status_destination" />
+			
+		<Preference
+			android:key="go"
+			android:title="@string/status_go" />
+			
+		<Preference
+			android:key="stop" 
+			android:title="@string/status_stop" />
+	
+	</PreferenceCategory>
+	
+	<PreferenceCategory
+		android:title="@string/category_actions">
+		
+		<RingtonePreference
+			android:key="tone"
+			android:title="@string/action_tone"
+			android:ringtoneType="notification"
+			android:showDefault="true"
+			android:showSilent="true" />
+		
+		<CheckBoxPreference
+			android:key="vibrate"
+			android:title="@string/action_vibrate" />
+			
+		<CheckBoxPreference
+			android:key="insistent"
+			android:title="@string/action_insistent"
+			android:summary="@string/action_insistent_summary" />
+	
+	</PreferenceCategory>
+
+</PreferenceScreen>
