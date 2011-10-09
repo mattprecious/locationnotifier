@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Location Notifier</string>
+    <string name="destination_label">Choose your destination</string>
+    
+    <string name="category_status">Status</string>
+    <string name="category_actions">Actions</string>
+    
+    <string name="status_destination">Set Destination</string>
+    <string name="status_go">Go!</string>
+    <string name="status_stop">Stop</string>
+    
+    <string name="action_tone">Notification Ringtone</string>
+    <string name="action_vibrate">Vibrate</string>
+    <string name="action_insistent">Insistent</string>
+    <string name="action_insistent_summary">Play sound repeatedly until you respond</string>
+    
+    <string name="silent">Silent</string>
+    
+    <string name="notification_awaiting">Awaiting your location...</string>
+    <string name="notification_tracking">m until destination...</string>
+    <string name="notification_alert_title">Destination approaching!</string>
+    <string name="notification_alert_text">Tap to clear.</string>
+    
+    <string name="hint_toast">Long press to set destination</string>
+    <string name="gps_button">GPS</string>
+    <string name="save_button">Save</string>
+    
+    <string name="radius_prompt">Radius</string>
+    <string-array name="radius_array">
+    	<item>50m</item>
+    	<item>100m</item>
+    	<item>150m</item>
+    	<item>200m</item>
+    	<item>250m</item>
+    	<item>300m</item>
+    	<item>350m</item>
+    	<item>400m</item>
+    	<item>450m</item>
+    	<item>500m</item>
+    	<item>550m</item>
+    	<item>600m</item>
+    	<item>650m</item>
+    	<item>700m</item>
+    	<item>750m</item>
+    	<item>800m</item>
+    	<item>850m</item>
+    	<item>900m</item>
+    	<item>950m</item>
+    	<item>1000m</item>
+    </string-array>
+</resources>
