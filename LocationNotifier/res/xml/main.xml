@@ -23,6 +23,31 @@
 	<PreferenceCategory
 		android:title="@string/category_actions">
 		
+		<PreferenceScreen
+			android:key="sms"
+			android:title="@string/category_sms">
+			
+			<PreferenceCategory
+				android:title="@string/category_sms">
+				
+				<CheckBoxPreference
+					android:key="sms_enabled"
+					android:title="@string/sms_enabled" />
+				
+				<Preference
+					android:key="sms_contact"
+					android:dependency="sms_enabled"
+					android:title="@string/sms_contact" />
+				
+				<EditTextPreference
+					android:key="sms_message"
+					android:dependency="sms_enabled"
+					android:title="@string/sms_message" />
+	
+			</PreferenceCategory>
+			
+		</PreferenceScreen>
+		
 		<RingtonePreference
 			android:key="tone"
 			android:title="@string/action_tone"

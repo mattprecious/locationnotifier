@@ -31,6 +31,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
+import android.telephony.SmsManager;
 import android.util.Log;
 
 /**
@@ -173,6 +174,17 @@ public class LocationService extends Service {
         }
 
         notificationManager.notify(0, notification);
+        
+        // send sms
+        if (preferences.getBoolean("sms_enabled", false)) {
+            String number = preferences.getString("sms_contact", null);
+            String message = preferences.getString("sms_message", null);
+            
+            if (number != null && message != null) {
+                SmsManager smsManager = SmsManager.getDefault();
+                smsManager.sendTextMessage(number, null, message, null, null);
+            }
+        }
 
         stopSelf();
     }

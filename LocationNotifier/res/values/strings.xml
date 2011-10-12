@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Location Notifier</string>
+    
+    <string name="ok">OK</string>
+    <string name="possessive_name">%s\'s</string>
+    <string name="possessive_name_s">%s\'</string>
+    
     <string name="destination_label">Choose your destination</string>
     
     <string name="category_status">Status</string>
@@ -14,6 +19,17 @@
     <string name="action_vibrate">Vibrate</string>
     <string name="action_insistent">Insistent</string>
     <string name="action_insistent_summary">Play sound repeatedly until you respond</string>
+    
+    <string name="category_sms">SMS</string>
+    <string name="sms_enabled">Send SMS</string>
+    <string name="sms_contact">Recipient</string>
+    <string name="sms_message">Message</string>
+    <string name="sms_number_pick_title">%s Numbers</string>
+    <string name="sms_no_numbers_title">No Numbers</string>
+    <string name="sms_no_numbers_message">%1$s doesn\'t have any numbers stored. Please select another contact or add a number for %2$s.</string>
+    
+    <string name="default_contact_upper">Contact</string>
+    <string name="default_contact_lower">this contact</string>
     
     <string name="silent">Silent</string>
     
