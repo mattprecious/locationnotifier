@@ -65,4 +65,10 @@
     	<item>950m</item>
     	<item>1000m</item>
     </string-array>
+    
+    <string name="whats_new">What\'s New?</string>
+    <string name="change_log">
+    	<ul>
+    	</ul>
+    </string>
 </resources>

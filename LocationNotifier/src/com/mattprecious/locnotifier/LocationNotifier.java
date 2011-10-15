@@ -44,6 +44,8 @@ import android.provider.ContactsContract.Data;
 import android.provider.ContactsContract.PhoneLookup;
 
 public class LocationNotifier extends PreferenceActivity {
+    
+    private final int VERSION_CODE = 3;
 
     private static LocationNotifier instance;
 
@@ -73,6 +75,7 @@ public class LocationNotifier extends PreferenceActivity {
 
     private final int DIALOG_ID_PHONE_PICKER = 1;
     private final int DIALOG_ID_PHONE_PICKER_NO_NUMBERS = 2;
+    private final int DIALOG_ID_CHANGE_LOG = 3;
 
     /** Called when the activity is first created. */
     @Override
@@ -152,6 +155,11 @@ public class LocationNotifier extends PreferenceActivity {
         };
         
         preferences.registerOnSharedPreferenceChangeListener(prefListener);
+        
+        // debug the change log
+        //preferences.edit().putInt("version_code", 0).commit();
+        
+        checkAndShowChangeLog();
     }
 
     @Override
@@ -255,6 +263,19 @@ public class LocationNotifier extends PreferenceActivity {
         }
 
         switch (id) {
+            case DIALOG_ID_CHANGE_LOG:
+                builder.setTitle(R.string.whats_new)
+                       .setIcon(android.R.drawable.ic_dialog_info)
+                       .setMessage(R.string.change_log)
+                       .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                           
+                           public void onClick(DialogInterface dialog, int id) {
+                               dialog.cancel();
+                           }
+                       })
+                       ;
+                dialog = builder.create();
+                break;
             case DIALOG_ID_PHONE_PICKER:
                 builder.setTitle(getString(R.string.sms_number_pick_title, contactNamePossessive));
                 builder.setItems(phoneLabels, new DialogInterface.OnClickListener() {
@@ -364,5 +385,15 @@ public class LocationNotifier extends PreferenceActivity {
         }
         
         tonePreference.setSummary(title);
+    }
+    
+    private void checkAndShowChangeLog() {
+        if (preferences.getInt("version_code", 0) != VERSION_CODE) {
+            showDialog(DIALOG_ID_CHANGE_LOG);
+            
+            Editor editor = preferences.edit();
+            editor.putInt("version_code", VERSION_CODE);
+            editor.commit();
+        }
     }
 }
