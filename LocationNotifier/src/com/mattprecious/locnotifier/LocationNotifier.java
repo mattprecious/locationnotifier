@@ -18,6 +18,7 @@ package com.mattprecious.locnotifier;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
@@ -42,6 +43,7 @@ import android.provider.ContactsContract.CommonDataKinds.StructuredName;
 import android.provider.ContactsContract.Contacts;
 import android.provider.ContactsContract.Data;
 import android.provider.ContactsContract.PhoneLookup;
+import android.telephony.TelephonyManager;
 
 public class LocationNotifier extends PreferenceActivity {
     
@@ -63,10 +65,12 @@ public class LocationNotifier extends PreferenceActivity {
     private Preference goPreference;
     private Preference stopPreference;
 
+    private PreferenceCategory actionsCategory;
     private RingtonePreference tonePreference;
     private CheckBoxPreference vibratePreference;
     private CheckBoxPreference insistentPreference;
 
+    private PreferenceScreen smsScreen;
     private CheckBoxPreference smsActivePreference;
     private Preference smsContactPreference;
     private EditTextPreference smsMessagePreference;
@@ -91,13 +95,20 @@ public class LocationNotifier extends PreferenceActivity {
         goPreference            = (Preference) findPreference("go");
         stopPreference          = (Preference) findPreference("stop");
 
-        smsActivePreference     = (CheckBoxPreference) findPreference("sms_enabled");
-        smsContactPreference    = (Preference) findPreference("sms_contact");
-        smsMessagePreference    = (EditTextPreference) findPreference("sms_message");
-
+        actionsCategory         = (PreferenceCategory) findPreference("category_actions");
         tonePreference          = (RingtonePreference) findPreference("tone");
         vibratePreference       = (CheckBoxPreference) findPreference("vibrate");
         insistentPreference     = (CheckBoxPreference) findPreference("insistent");
+        
+        smsScreen               = (PreferenceScreen) findPreference("screen_sms");
+        smsActivePreference     = (CheckBoxPreference) findPreference("sms_enabled");
+        smsContactPreference    = (Preference) findPreference("sms_contact");
+        smsMessagePreference    = (EditTextPreference) findPreference("sms_message");
+        
+        TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        if (telephonyManager.getPhoneType() == TelephonyManager.PHONE_TYPE_NONE) {
+            actionsCategory.removePreference(smsScreen);
+        }
 
         destinationPreference.setOnPreferenceClickListener(new OnPreferenceClickListener() {
 

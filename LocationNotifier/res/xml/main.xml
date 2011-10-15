@@ -21,10 +21,11 @@
 	</PreferenceCategory>
 	
 	<PreferenceCategory
+		android:key="category_actions"
 		android:title="@string/category_actions">
 		
 		<PreferenceScreen
-			android:key="sms"
+			android:key="screen_sms"
 			android:title="@string/category_sms">
 			
 			<PreferenceCategory
