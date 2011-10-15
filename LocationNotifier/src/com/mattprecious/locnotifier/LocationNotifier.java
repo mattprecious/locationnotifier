@@ -45,7 +45,7 @@ import android.provider.ContactsContract.PhoneLookup;
 
 public class LocationNotifier extends PreferenceActivity {
     
-    private final int VERSION_CODE = 3;
+    private final int VERSION_CODE = 4;
 
     private static LocationNotifier instance;
 

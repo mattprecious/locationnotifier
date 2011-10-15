@@ -69,6 +69,7 @@
     <string name="whats_new">What\'s New?</string>
     <string name="change_log">
     	<ul>
+    		<li>Send an SMS when approaching your destination</li>
     	</ul>
     </string>
 </resources>
