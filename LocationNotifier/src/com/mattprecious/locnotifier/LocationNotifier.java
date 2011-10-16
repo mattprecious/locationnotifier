@@ -25,6 +25,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.Cursor;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -47,8 +50,6 @@ import android.telephony.TelephonyManager;
 
 public class LocationNotifier extends PreferenceActivity {
     
-    private final int VERSION_CODE = 4;
-
     private static LocationNotifier instance;
 
     // static variables used to store information for dialogs
@@ -399,12 +400,20 @@ public class LocationNotifier extends PreferenceActivity {
     }
     
     private void checkAndShowChangeLog() {
-        if (preferences.getInt("version_code", 0) != VERSION_CODE) {
-            showDialog(DIALOG_ID_CHANGE_LOG);
+        PackageManager packageManager = getPackageManager();
+        
+        try {
+            PackageInfo packageInfo = packageManager.getPackageInfo(getPackageName(), 0);
             
-            Editor editor = preferences.edit();
-            editor.putInt("version_code", VERSION_CODE);
-            editor.commit();
+            if (preferences.getInt("version_code", 0) != packageInfo.versionCode) {
+                showDialog(DIALOG_ID_CHANGE_LOG);
+                
+                Editor editor = preferences.edit();
+                editor.putInt("version_code", packageInfo.versionCode);
+                editor.commit();
+            }
+        } catch (NameNotFoundException e) {
+            
         }
     }
 }
