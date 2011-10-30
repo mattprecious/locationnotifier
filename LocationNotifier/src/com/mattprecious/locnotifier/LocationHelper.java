@@ -16,12 +16,20 @@
 
 package com.mattprecious.locnotifier;
 
+import java.io.IOException;
+import java.util.List;
+
+import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
+
+import com.google.android.maps.GeoPoint;
 
 /**
  * 
  * @author Google
- *
+ * 
  */
 public class LocationHelper {
     private static final int TWO_MINUTES = 1000 * 60 * 2;
@@ -86,5 +94,29 @@ public class LocationHelper {
             return provider2 == null;
         }
         return provider1.equals(provider2);
+    }
+
+    public static GeoPoint addressToPoint(Context context, String addressStr) {
+        GeoPoint ret = null;
+
+        try {
+            Geocoder coder = new Geocoder(context);
+
+            List<Address> address = coder.getFromLocationName(addressStr, 1);
+            if (address == null || address.size() == 0) {
+                return ret;
+            }
+
+            Address location = address.get(0);
+            
+            int latitude = (int) (location.getLatitude() * 1E6);
+            int longitude = (int) (location.getLongitude() * 1E6);
+
+            ret = new GeoPoint(latitude, longitude);
+        } catch (IOException e) {
+
+        }
+
+        return ret;
     }
 }

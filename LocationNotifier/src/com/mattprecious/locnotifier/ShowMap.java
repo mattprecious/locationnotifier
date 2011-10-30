@@ -56,6 +56,9 @@ import de.android1.overlaymanager.ZoomEvent;
 
 public class ShowMap extends MapActivity {
 
+    public static final String EXTRA_DEST_LAT = "dest_lat";
+    public static final String EXTRA_DEST_LNG = "dest_lng";
+
     private LocationManager locationManager;
     private LocationListener locationListener;
 
@@ -86,6 +89,8 @@ public class ShowMap extends MapActivity {
         // TODO Auto-generated method stub
         super.onCreate(icicle);
         setContentView(R.layout.map);
+
+        Bundle extras = getIntent().getExtras();
 
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -262,7 +267,19 @@ public class ShowMap extends MapActivity {
         int dest_lng = preferences.getInt("dest_lng", 0);
         float dest_radius = preferences.getFloat("dest_radius", 0);
 
+        boolean moveToDestination = false;
+        if (extras != null && extras.containsKey(EXTRA_DEST_LAT) && extras.containsKey(EXTRA_DEST_LNG)) {
+            dest_lat = extras.getInt(EXTRA_DEST_LAT);
+            dest_lng = extras.getInt(EXTRA_DEST_LNG);
+            
+            moveToDestination = true;
+        }
+
         GeoPoint destination = new GeoPoint(dest_lat, dest_lng);
+        
+        if (moveToDestination) {
+            mapController.animateTo(destination);
+        }
 
         if (dest_lat != 0 && dest_lng != 0) {
             destinationPoint = new PointOverlay(destination, PointType.DESTINATION);

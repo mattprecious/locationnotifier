@@ -48,6 +48,8 @@ import android.provider.ContactsContract.Data;
 import android.provider.ContactsContract.PhoneLookup;
 import android.telephony.TelephonyManager;
 
+import com.google.android.maps.GeoPoint;
+
 public class LocationNotifier extends PreferenceActivity {
     
     private static LocationNotifier instance;
@@ -167,6 +169,18 @@ public class LocationNotifier extends PreferenceActivity {
         };
         
         preferences.registerOnSharedPreferenceChangeListener(prefListener);
+        
+        Bundle extras = getIntent().getExtras();
+        if (extras != null && extras.containsKey(Intent.EXTRA_TEXT)) {
+            String location = extras.getString(Intent.EXTRA_TEXT);
+            location = location.split("\n")[0];
+            
+            GeoPoint point = LocationHelper.addressToPoint(getApplicationContext(), location);
+            
+            if (point != null) {
+                setDestination(point);
+            }
+        }
         
         // debug the change log
         //preferences.edit().putInt("version_code", 0).commit();
@@ -321,7 +335,18 @@ public class LocationNotifier extends PreferenceActivity {
     }
 
     private void setDestination() {
-        startActivity(new Intent(this, ShowMap.class));
+        setDestination(null);
+    }
+    
+    private void setDestination(GeoPoint point) {
+        Intent intent = new Intent(this, ShowMap.class);
+        
+        if (point != null) {
+            intent.putExtra(ShowMap.EXTRA_DEST_LAT, point.getLatitudeE6());
+            intent.putExtra(ShowMap.EXTRA_DEST_LNG, point.getLongitudeE6());
+        }
+        
+        startActivity(intent);
     }
 
     private void updateStartGo() {
