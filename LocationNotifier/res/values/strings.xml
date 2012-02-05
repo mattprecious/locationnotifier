@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Location Notifier</string>
-    
     <string name="ok">OK</string>
     <string name="possessive_name">%s\'s</string>
     <string name="possessive_name_s">%s\'</string>
@@ -70,9 +68,4 @@
     <string name="translate">Contribute Translations</string>
     
     <string name="whats_new">What\'s New?</string>
-    <string name="change_log">
-    	<ul>
-    		<li>Send an SMS message when approaching your destination</li>
-    	</ul>
-    </string>
 </resources>
