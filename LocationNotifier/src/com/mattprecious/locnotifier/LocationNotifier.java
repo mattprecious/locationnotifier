@@ -77,6 +77,8 @@ public class LocationNotifier extends PreferenceActivity {
     private CheckBoxPreference smsActivePreference;
     private Preference smsContactPreference;
     private EditTextPreference smsMessagePreference;
+    
+    private Preference translatePreference;
 
     private final int REQUEST_CODE_CONTACT_PICKER = 1;
 
@@ -107,6 +109,8 @@ public class LocationNotifier extends PreferenceActivity {
         smsActivePreference     = (CheckBoxPreference) findPreference("sms_enabled");
         smsContactPreference    = (Preference) findPreference("sms_contact");
         smsMessagePreference    = (EditTextPreference) findPreference("sms_message");
+        
+        translatePreference     = (Preference) findPreference("translate");
         
         TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         if (telephonyManager.getPhoneType() == TelephonyManager.PHONE_TYPE_NONE) {
@@ -152,6 +156,18 @@ public class LocationNotifier extends PreferenceActivity {
                 Intent contactPickerIntent = new Intent(Intent.ACTION_PICK, Contacts.CONTENT_URI);
                 startActivityForResult(contactPickerIntent, REQUEST_CODE_CONTACT_PICKER);
                 return false;
+            }
+        });
+        
+        translatePreference.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+            
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse("http://crowdin.net/project/location-notifier"));
+                startActivity(intent);
+                
+                return true;
             }
         });
 

@@ -66,6 +66,9 @@
     	<item>1000m</item>
     </string-array>
     
+    <string name="category_more">More</string>
+    <string name="translate">Contribute Translations</string>
+    
     <string name="whats_new">What\'s New?</string>
     <string name="change_log">
     	<ul>
