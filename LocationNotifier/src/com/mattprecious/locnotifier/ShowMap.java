@@ -18,6 +18,7 @@ package com.mattprecious.locnotifier;
 
 import java.util.List;
 
+import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -29,6 +30,8 @@ import android.os.Bundle;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -89,6 +92,8 @@ public class ShowMap extends MapActivity {
         // TODO Auto-generated method stub
         super.onCreate(icicle);
         setContentView(R.layout.map);
+        
+        ActionBar actionBar = getActionBar();
 
         Bundle extras = getIntent().getExtras();
 
@@ -304,6 +309,14 @@ public class ShowMap extends MapActivity {
     @Override
     protected boolean isRouteDisplayed() {
         return false;
+    }
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.map, menu);
+
+        return super.onCreateOptionsMenu(menu);
     }
     
     private void showHint() {
