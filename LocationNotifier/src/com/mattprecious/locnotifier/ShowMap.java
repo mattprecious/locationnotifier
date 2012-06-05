@@ -18,7 +18,6 @@ package com.mattprecious.locnotifier;
 
 import java.util.List;
 
-import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -30,8 +29,6 @@ import android.os.Bundle;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -44,8 +41,11 @@ import android.widget.Spinner;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.SherlockMapActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 import com.google.android.maps.GeoPoint;
-import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
@@ -57,7 +57,7 @@ import de.android1.overlaymanager.ManagedOverlayItem;
 import de.android1.overlaymanager.OverlayManager;
 import de.android1.overlaymanager.ZoomEvent;
 
-public class ShowMap extends MapActivity {
+public class ShowMap extends SherlockMapActivity {
 
     public static final String EXTRA_DEST_LAT = "dest_lat";
     public static final String EXTRA_DEST_LNG = "dest_lng";
@@ -93,7 +93,7 @@ public class ShowMap extends MapActivity {
         super.onCreate(icicle);
         setContentView(R.layout.map);
         
-        ActionBar actionBar = getActionBar();
+        ActionBar actionBar = getSupportActionBar();
 
         Bundle extras = getIntent().getExtras();
 
@@ -313,7 +313,7 @@ public class ShowMap extends MapActivity {
     
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater menuInflater = getMenuInflater();
+        MenuInflater menuInflater = getSupportMenuInflater();
         menuInflater.inflate(R.menu.map, menu);
 
         return super.onCreateOptionsMenu(menu);
