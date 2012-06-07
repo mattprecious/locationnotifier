@@ -45,6 +45,7 @@ import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockMapActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
@@ -80,12 +81,9 @@ public class ShowMap extends SherlockMapActivity {
     private ManagedOverlay overlayListener;
 
     private MapView mapView;
-    private ToggleButton gpsToggle;
-    private Spinner radiusSpinner;
-    private ImageButton locationButton;
-    private Button saveButton;
-
     private MapController mapController;
+    
+    private boolean gpsEnabled = false;
 
     @Override
     protected void onCreate(Bundle icicle) {
@@ -93,7 +91,8 @@ public class ShowMap extends SherlockMapActivity {
         super.onCreate(icicle);
         setContentView(R.layout.map);
         
-        ActionBar actionBar = getSupportActionBar();
+//        ActionBar actionBar = getSupportActionBar();
+//        actionBar.setDisplayHomeAsUpEnabled(true);
 
         Bundle extras = getIntent().getExtras();
 
@@ -105,71 +104,33 @@ public class ShowMap extends SherlockMapActivity {
         mapView.setBuiltInZoomControls(true);
 
         mapController = mapView.getController();
-
-        gpsToggle = (ToggleButton) findViewById(R.id.gps_button);
-        gpsToggle.setChecked(preferences.getBoolean("use_gps", false));
-
-        radiusSpinner = (Spinner) findViewById(R.id.radius);
-        radiusSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-                if (destinationPoint != null) {
-                    Log.d(getClass().getSimpleName(), "Radius updated: " + (pos + 1) * 50 + "m");
-                    destinationRadius = new RadiusOverlay(destinationPoint.getPoint(), (pos + 1) * 50, PointType.DESTINATION);
-                    redraw();
-                }
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-
-        ArrayAdapter<CharSequence> radiusAdapter = ArrayAdapter.createFromResource(this, R.array.radius_array, android.R.layout.simple_spinner_item);
-        radiusAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        radiusSpinner.setAdapter(radiusAdapter);
         
-        locationButton = (ImageButton) findViewById(R.id.my_location);
-        locationButton.setOnClickListener(new OnClickListener() {
-            
-            @Override
-            public void onClick(View arg0) {
-                moveToLocation();
-            }
-        });
+        gpsEnabled = preferences.getBoolean("use_gps",  false);
 
-        saveButton = (Button) findViewById(R.id.save);
-        saveButton.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View arg0) {
-                // use the spinner instead of the radius object so there's one
-                // less thing to catch
-                float radius = (radiusSpinner.getSelectedItemPosition() + 1) * 50;
-
-                Editor editor = preferences.edit();
-
-                if (destinationPoint != null) {
-                    GeoPoint destination = destinationPoint.getPoint();
-
-                    editor.putInt("dest_lat", destination.getLatitudeE6());
-                    editor.putInt("dest_lng", destination.getLongitudeE6());
-                }
-
-                editor.putFloat("dest_radius", radius);
-                editor.putBoolean("use_gps", gpsToggle.isChecked());
-                editor.commit();
-                
-                if (LocationService.isRunning()) {
-                    stopService(new Intent(getApplicationContext(), LocationService.class));
-                    startService(new Intent(getApplicationContext(), LocationService.class));
-                }
-
-                finish();
-            }
-        });
-
+//        gpsToggle = (ToggleButton) findViewById(R.id.gps_button);
+//        gpsToggle.setChecked(preferences.getBoolean("use_gps", false));
+//
+//        radiusSpinner = (Spinner) findViewById(R.id.radius);
+//        radiusSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+//                if (destinationPoint != null) {
+//                    Log.d(getClass().getSimpleName(), "Radius updated: " + (pos + 1) * 50 + "m");
+//                    destinationRadius = new RadiusOverlay(destinationPoint.getPoint(), (pos + 1) * 50, PointType.DESTINATION);
+//                    redraw();
+//                }
+//
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> parent) {
+//            }
+//        });
+//
+//        ArrayAdapter<CharSequence> radiusAdapter = ArrayAdapter.createFromResource(this, R.array.radius_array, android.R.layout.simple_spinner_item);
+//        radiusAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        radiusSpinner.setAdapter(radiusAdapter);
+//        
         overlayManager = new OverlayManager(this, mapView);
         overlayListener = overlayManager.createOverlay("overlayListener");
 
@@ -292,7 +253,7 @@ public class ShowMap extends SherlockMapActivity {
 
         if (dest_radius != 0) {
             destinationRadius = new RadiusOverlay(destination, dest_radius, PointType.DESTINATION);
-            radiusSpinner.setSelection((int) ((dest_radius / 50) - 1));
+//            radiusSpinner.setSelection((int) ((dest_radius / 50) - 1));
         }
 
         redraw();
@@ -315,8 +276,66 @@ public class ShowMap extends SherlockMapActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getSupportMenuInflater();
         menuInflater.inflate(R.menu.map, menu);
-
+        
         return super.onCreateOptionsMenu(menu);
+    }
+    
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+    	menu.findItem(R.id.menu_gps_on).setVisible(gpsEnabled);
+       	menu.findItem(R.id.menu_gps_off).setVisible(!gpsEnabled);
+       	
+    	return super.onPrepareOptionsMenu(menu);
+    }
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+	    switch (item.getItemId()) {
+			case R.id.menu_save:
+				// use the spinner instead of the radius object so there's one
+				// less thing to catch
+//			    float radius = (radiusSpinner.getSelectedItemPosition() + 1) * 50;
+				
+				Editor editor = preferences.edit();
+				
+				if (destinationPoint != null) {
+					GeoPoint destination = destinationPoint.getPoint();
+					
+					editor.putInt("dest_lat", destination.getLatitudeE6());
+					editor.putInt("dest_lng", destination.getLongitudeE6());
+				}
+				
+//			    editor.putFloat("dest_radius", radius);
+//		        editor.putBoolean("use_gps", gpsToggle.isChecked());
+				editor.commit();
+				
+				if (LocationService.isRunning()) {
+					stopService(new Intent(getApplicationContext(), LocationService.class));
+					startService(new Intent(getApplicationContext(), LocationService.class));
+				}
+				
+				finish();
+				return true;
+			case R.id.menu_location:
+				moveToLocation();
+				return true;
+			case R.id.menu_gps_on:
+				gpsEnabled = false;
+				invalidateOptionsMenu();
+				
+				return true;
+			case R.id.menu_gps_off:
+				gpsEnabled = true;
+				invalidateOptionsMenu();
+				
+				return true;
+			case R.id.menu_radius:
+				
+				
+				return true;
+			default:
+				return super.onOptionsItemSelected(item);
+    	}
     }
     
     private void showHint() {
@@ -349,7 +368,7 @@ public class ShowMap extends SherlockMapActivity {
 
     private void showDestination(GeoPoint point) {
         destinationPoint = new PointOverlay(point, PointType.DESTINATION);
-        destinationRadius = new RadiusOverlay(point, (radiusSpinner.getSelectedItemPosition() + 1) * 50, PointType.DESTINATION);
+//        destinationRadius = new RadiusOverlay(point, (radiusSpinner.getSelectedItemPosition() + 1) * 50, PointType.DESTINATION);
 
         redraw();
     }

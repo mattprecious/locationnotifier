@@ -11,14 +11,24 @@
         android:orderInCategory="0"
         android:showAsAction="always" />
     
-    <item android:id="@+id/menu_gps"
+    <item android:id="@+id/menu_gps_on"
         android:title="GPS"
         android:orderInCategory="1"
-        android:showAsAction="ifRoom" />
+        android:showAsAction="always" />
+    
+    <item android:id="@+id/menu_gps_off"
+        android:title="Net"
+        android:orderInCategory="1"
+        android:showAsAction="always" />
+    
+    <item android:id="@+id/menu_radius"
+        android:title="Distance"
+        android:orderInCategory="1"
+        android:showAsAction="always" />
     
     <item android:id="@+id/menu_location"
         android:title="My Location"
         android:icon="@android:drawable/ic_menu_mylocation"
         android:orderInCategory="1"
-        android:showAsAction="ifRoom" />
+        android:showAsAction="always" />
 </menu>

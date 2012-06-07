@@ -30,8 +30,8 @@
         </activity>
         
         <activity android:name="ShowMap"
-	    android:label="@string/destination_label"
-	    android:uiOptions="splitActionBarWhenNarrow" />
+		    android:label="@string/destination_label"
+		    android:uiOptions="splitActionBarWhenNarrow" />
         
         <service android:name="com.mattprecious.locnotifier.LocationService"/>
         
