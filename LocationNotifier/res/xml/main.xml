@@ -68,6 +68,16 @@
 	</PreferenceCategory>
 	
 	<PreferenceCategory
+	    android:title="@string/category_options">
+		
+	    <CheckBoxPreference
+	        android:key="imperial"
+			android:title="@string/options_imperial"
+			android:defaultValue="0" />
+	        
+	</PreferenceCategory>
+	
+	<PreferenceCategory
 		android:title="@string/category_more">
 			
 		<Preference

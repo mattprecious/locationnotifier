@@ -194,9 +194,17 @@ public class LocationService extends Service {
     }
 
     private void updateRunningNotification(float distance) {
-        String message = (distance == -1) ? getString(R.string.notification_awaiting)
-                : (Math.round(distance) + getString(R.string.notification_tracking));
-
+        String message;
+        if (distance == -1) {
+        	message = getString(R.string.notification_awaiting);
+        } else {
+        	boolean imperial = preferences.getBoolean("imperial", false);
+        	int distanceStrId = imperial ? R.string.distance_feet : R.string.distance_metres;
+        	long displayDistance = imperial ? Math.round(distance * 3.2808399) : Math.round(distance);
+        	
+        	message = getString(R.string.notification_tracking, getString(distanceStrId, displayDistance));
+        }
+        
         Notification runningNotification = new Notification(R.drawable.notification_running, null, 0);
 
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, LocationNotifier.class), 0);
