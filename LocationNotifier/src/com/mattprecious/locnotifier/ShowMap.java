@@ -25,23 +25,18 @@ import android.content.SharedPreferences.Editor;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.Spinner;
+import android.widget.LinearLayout;
+import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
-import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockMapActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -59,6 +54,7 @@ import de.android1.overlaymanager.OverlayManager;
 import de.android1.overlaymanager.ZoomEvent;
 
 public class ShowMap extends SherlockMapActivity {
+	public static final long MIN_DISTANCE = 50;
 
     public static final String EXTRA_DEST_LAT = "dest_lat";
     public static final String EXTRA_DEST_LNG = "dest_lng";
@@ -83,7 +79,11 @@ public class ShowMap extends SherlockMapActivity {
     private MapView mapView;
     private MapController mapController;
     
-    private boolean gpsEnabled = false;
+    private LinearLayout distanceBarPanel;
+    private SeekBar distanceBar;
+    private long distance;
+    
+    private boolean gpsEnabled;
 
     @Override
     protected void onCreate(Bundle icicle) {
@@ -101,36 +101,36 @@ public class ShowMap extends SherlockMapActivity {
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
         mapView = (MapView) findViewById(R.id.mapview);
-        mapView.setBuiltInZoomControls(true);
-
         mapController = mapView.getController();
         
-        gpsEnabled = preferences.getBoolean("use_gps",  false);
+        distanceBarPanel = (LinearLayout) findViewById(R.id.distance_bar_panel);
+        distanceBar = (SeekBar) findViewById(R.id.distance_bar);
+        distanceBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+			private UpdateDistanceTask updateDistanceTask;
+			
+			@Override
+			public void onStopTrackingTouch(SeekBar seekBar) {
+				seekBar.setProgress(4);
+				updateDistanceTask.cancel(true);
+			}
+			
+			@Override
+			public void onStartTrackingTouch(SeekBar seekBar) {
+				updateDistanceTask = (UpdateDistanceTask) new UpdateDistanceTask().execute();
+			}
+			
+			@Override
+			public void onProgressChanged(SeekBar seekBar, int progress,
+					boolean fromUser) {
+				
+			}
+		});
+        
+        // TODO: Either change this preference type to a long or create a new preference
+        distance = (long) preferences.getFloat("dest_radius", MIN_DISTANCE);
+        
+        gpsEnabled = preferences.getBoolean("use_gps", true);
 
-//        gpsToggle = (ToggleButton) findViewById(R.id.gps_button);
-//        gpsToggle.setChecked(preferences.getBoolean("use_gps", false));
-//
-//        radiusSpinner = (Spinner) findViewById(R.id.radius);
-//        radiusSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-//                if (destinationPoint != null) {
-//                    Log.d(getClass().getSimpleName(), "Radius updated: " + (pos + 1) * 50 + "m");
-//                    destinationRadius = new RadiusOverlay(destinationPoint.getPoint(), (pos + 1) * 50, PointType.DESTINATION);
-//                    redraw();
-//                }
-//
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> parent) {
-//            }
-//        });
-//
-//        ArrayAdapter<CharSequence> radiusAdapter = ArrayAdapter.createFromResource(this, R.array.radius_array, android.R.layout.simple_spinner_item);
-//        radiusAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        radiusSpinner.setAdapter(radiusAdapter);
-//        
         overlayManager = new OverlayManager(this, mapView);
         overlayListener = overlayManager.createOverlay("overlayListener");
 
@@ -253,7 +253,6 @@ public class ShowMap extends SherlockMapActivity {
 
         if (dest_radius != 0) {
             destinationRadius = new RadiusOverlay(destination, dest_radius, PointType.DESTINATION);
-//            radiusSpinner.setSelection((int) ((dest_radius / 50) - 1));
         }
 
         redraw();
@@ -292,10 +291,6 @@ public class ShowMap extends SherlockMapActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 	    switch (item.getItemId()) {
 			case R.id.menu_save:
-				// use the spinner instead of the radius object so there's one
-				// less thing to catch
-//			    float radius = (radiusSpinner.getSelectedItemPosition() + 1) * 50;
-				
 				Editor editor = preferences.edit();
 				
 				if (destinationPoint != null) {
@@ -305,8 +300,8 @@ public class ShowMap extends SherlockMapActivity {
 					editor.putInt("dest_lng", destination.getLongitudeE6());
 				}
 				
-//			    editor.putFloat("dest_radius", radius);
-//		        editor.putBoolean("use_gps", gpsToggle.isChecked());
+			    editor.putFloat("dest_radius", distance);
+		        editor.putBoolean("use_gps", gpsEnabled);
 				editor.commit();
 				
 				if (LocationService.isRunning()) {
@@ -329,8 +324,8 @@ public class ShowMap extends SherlockMapActivity {
 				invalidateOptionsMenu();
 				
 				return true;
-			case R.id.menu_radius:
-				
+			case R.id.menu_distance:
+				distanceBarPanel.setVisibility(distanceBarPanel.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
 				
 				return true;
 			default:
@@ -368,13 +363,12 @@ public class ShowMap extends SherlockMapActivity {
 
     private void showDestination(GeoPoint point) {
         destinationPoint = new PointOverlay(point, PointType.DESTINATION);
-//        destinationRadius = new RadiusOverlay(point, (radiusSpinner.getSelectedItemPosition() + 1) * 50, PointType.DESTINATION);
+        destinationRadius = new RadiusOverlay(point, distance, PointType.DESTINATION);
 
         redraw();
     }
 
     private void redraw() {
-        Log.d(getClass().getSimpleName(), "Redraw");
         List<Overlay> mapOverlays = mapView.getOverlays();
 
         mapOverlays.clear();
@@ -404,6 +398,37 @@ public class ShowMap extends SherlockMapActivity {
         Double lng = location.getLongitude() * 1E6;
 
         return new GeoPoint(lat.intValue(), lng.intValue());
+    }
+    
+    public class UpdateDistanceTask extends AsyncTask<Void, Void, Void> {
+    	@Override
+    	protected Void doInBackground(Void... params) {
+    		while (!this.isCancelled()) {
+    			long modifier = Math.abs(distanceBar.getProgress() - 4);
+    			long adjustedModifier = (long) Math.pow(2, modifier);
+    			long signedModifier = distanceBar.getProgress() < 4 ? -adjustedModifier : adjustedModifier;
+    			
+	    		distance = Math.max(distance + signedModifier, MIN_DISTANCE);
+	    		destinationRadius = new RadiusOverlay(destinationPoint.getPoint(), distance, PointType.DESTINATION);
+	    		
+	    		mapView.post(new Runnable() {
+					
+					@Override
+					public void run() {
+						redraw();
+						
+					}
+				});
+	    		
+	    		try {
+	    			Thread.sleep(100);
+	    		} catch (InterruptedException e) {
+	    			// do nothing
+	    		}
+    		}
+    		
+    		return null;
+    	}
     }
 
 }

@@ -1,33 +1,36 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/menu_search"
-          android:title="Search"
+          android:title="@string/search_button"
           android:icon="@android:drawable/ic_menu_search"
-          android:showAsAction="ifRoom|collapseActionView"
+          android:showAsAction="always|collapseActionView"
           android:actionViewClass="android.widget.SearchView" />
     
     <item android:id="@+id/menu_save"
-        android:title="Save"
+        android:title="@string/save_button"
         android:icon="@android:drawable/ic_menu_save"
         android:orderInCategory="0"
         android:showAsAction="always" />
     
     <item android:id="@+id/menu_gps_on"
-        android:title="GPS"
+        android:title="@string/gps_button_on"
+        android:icon="@drawable/menu_gps_on"
         android:orderInCategory="1"
-        android:showAsAction="always" />
+        android:showAsAction="ifRoom" />
     
     <item android:id="@+id/menu_gps_off"
-        android:title="Net"
+        android:title="@string/gps_button_off"
+        android:icon="@drawable/menu_gps_off"
         android:orderInCategory="1"
-        android:showAsAction="always" />
+        android:showAsAction="ifRoom" />
     
-    <item android:id="@+id/menu_radius"
-        android:title="Distance"
+    <item android:id="@+id/menu_distance"
+        android:title="@string/distance_button"
+        android:icon="@drawable/menu_distance"
         android:orderInCategory="1"
         android:showAsAction="always" />
     
     <item android:id="@+id/menu_location"
-        android:title="My Location"
+        android:title="@string/my_location_button"
         android:icon="@android:drawable/ic_menu_mylocation"
         android:orderInCategory="1"
         android:showAsAction="always" />
