@@ -1,60 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:theme="@android:style/Theme.NoTitleBar"
-    android:id="@+id/map"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    android:theme="@android:style/Theme.NoTitleBar">
+
+    <com.google.android.maps.MapView
+        android:id="@+id/mapview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:clickable="true"
+        android:apiKey="@string/maps_key" />
     
     <LinearLayout
-    	android:id="@+id/map_container"
-    	android:orientation="vertical"
-    	android:layout_width="fill_parent"
-    	android:layout_height="fill_parent">
+        android:id="@+id/distance_bar_panel"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="#191E23"
+        android:padding="10dp"
+        android:visibility="gone">
     
-	    <com.google.android.maps.MapView
-	        android:id="@+id/mapview"
+	    <SeekBar
+	        android:id="@+id/distance_bar"
 	        android:layout_width="fill_parent"
-	        android:layout_height="fill_parent"
-	        android:clickable="true"
-	        android:apiKey="@string/maps_key" />
-	        
-    </LinearLayout>
+	        android:layout_height="wrap_content"
+	        android:progress="4"
+	        android:max="8"
+	        android:progressDrawable="@drawable/distancebar" />
     
-    <LinearLayout
-    	android:id="@+id/controls"
-    	android:orientation="horizontal"
-    	android:layout_centerHorizontal="true"
-    	android:layout_alignParentTop="true"
-    	android:layout_width="wrap_content"
-    	android:layout_height="wrap_content"
-    	android:layout_marginTop="5dip">
-    	
-	    <ToggleButton
-	    	android:id="@+id/gps_button"
-	    	android:layout_width="wrap_content"
-	    	android:layout_height="wrap_content"
-	    	android:layout_gravity="center_vertical"
-	    	android:textOn="@string/gps_button"
-	    	android:textOff="@string/gps_button" />
-	    	
-	    <Spinner
-	    	android:id="@+id/radius"
-	    	android:layout_width="wrap_content"
-	    	android:layout_height="wrap_content"
-	    	android:prompt="@string/radius_prompt" />
-	    	
-	    <ImageButton
-	    	android:id="@+id/my_location"
-	    	android:layout_width="wrap_content"
-	    	android:layout_height="wrap_content"
-	    	android:src="@drawable/my_location" />
-	    		    	
-	    <Button
-	    	android:id="@+id/save"
-	    	android:layout_width="wrap_content"
-	    	android:layout_height="wrap_content"
-	    	android:text="@string/save_button" />
-    	
     </LinearLayout>
-        
-</RelativeLayout>
+
+</merge>

@@ -29,7 +29,9 @@
             </intent-filter>
         </activity>
         
-        <activity android:name="ShowMap" android:label="@string/destination_label"></activity>
+        <activity android:name="ShowMap"
+		    android:label="@string/destination_label"
+		    android:uiOptions="splitActionBarWhenNarrow" />
         
         <service android:name="com.mattprecious.locnotifier.LocationService"/>
         

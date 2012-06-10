@@ -4,7 +4,7 @@
     <string name="possessive_name">%s\'s</string>
     <string name="possessive_name_s">%s\'</string>
     
-    <string name="destination_label">Choose your destination</string>
+    <string name="destination_label">Destination</string>
     
     <string name="category_status">Status</string>
     <string name="category_actions">Actions</string>
@@ -43,32 +43,12 @@
     <string name="notification_alert_text">Tap to clear.</string>
     
     <string name="hint_toast">Long press to set destination</string>
-    <string name="gps_button">GPS</string>
+    <string name="gps_button_on">GPS On</string>
+    <string name="gps_button_off">GPS Off</string>
     <string name="save_button">Save</string>
-    
-    <string name="radius_prompt">Radius</string>
-    <string-array name="radius_array">
-    	<item>50m</item>
-    	<item>100m</item>
-    	<item>150m</item>
-    	<item>200m</item>
-    	<item>250m</item>
-    	<item>300m</item>
-    	<item>350m</item>
-    	<item>400m</item>
-    	<item>450m</item>
-    	<item>500m</item>
-    	<item>550m</item>
-    	<item>600m</item>
-    	<item>650m</item>
-    	<item>700m</item>
-    	<item>750m</item>
-    	<item>800m</item>
-    	<item>850m</item>
-    	<item>900m</item>
-    	<item>950m</item>
-    	<item>1000m</item>
-    </string-array>
+    <string name="distance_button">Distance</string>
+    <string name="my_location_button">My Location</string>
+    <string name="search_button">Search</string>
     
     <string name="category_more">More</string>
     <string name="translate">Contribute Translations</string>
