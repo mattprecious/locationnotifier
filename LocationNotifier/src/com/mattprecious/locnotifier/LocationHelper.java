@@ -127,4 +127,18 @@ public class LocationHelper {
 
         return new GeoPoint(latitude, longitude);
     }
+    
+    public static String addressToString(Address address) {
+    	StringBuilder builder = new StringBuilder();
+    	
+    	for (int i = 0; i < address.getMaxAddressLineIndex(); i++) {
+    		if (i > 0) {
+    			builder.append(", ");
+    		}
+    		
+    		builder.append(address.getAddressLine(i));
+    	}
+    	
+    	return builder.toString();
+    }
 }

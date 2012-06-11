@@ -7,6 +7,8 @@
     <string name="switch_yes">Yes</string>
     <string name="switch_no">No</string>
     
+    <string name="cancel_button">Cancel</string>
+    
     <string name="destination_label">Destination</string>
     
     <string name="category_status">Status</string>
@@ -45,6 +47,8 @@
     <string name="notification_tracking">%s until destination&#8230;</string>
     <string name="notification_alert_title">Destination approaching!</string>
     <string name="notification_alert_text">Tap to clear.</string>
+    
+    <string name="search_results">Search Results</string>
     
     <string name="hint_toast">Long press to set destination</string>
     <string name="gps_button_on">GPS On</string>

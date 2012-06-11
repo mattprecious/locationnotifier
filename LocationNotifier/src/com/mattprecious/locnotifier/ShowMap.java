@@ -18,10 +18,14 @@ package com.mattprecious.locnotifier;
 
 import java.util.List;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.location.Address;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -33,6 +37,8 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.SearchView;
+import android.widget.SearchView.OnQueryTextListener;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Toast;
@@ -85,6 +91,10 @@ public class ShowMap extends SherlockMapActivity {
     
     private boolean gpsEnabled;
     private boolean followLocation;
+    
+    private List<Address> searchResults;
+    
+    private final int DIALOG_ID_SEARCH = 1;
 
     @Override
     protected void onCreate(Bundle icicle) {
@@ -298,9 +308,76 @@ public class ShowMap extends SherlockMapActivity {
     }
     
     @Override
+    protected Dialog onCreateDialog(int id) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        Dialog dialog;
+        
+        switch(id) {
+        	case DIALOG_ID_SEARCH:
+        		String[] addresses = new String[searchResults.size()];
+        		for (int i = 0; i < addresses.length; i++) {
+        			addresses[i] = LocationHelper.addressToString(searchResults.get(i));
+        		}
+        		
+        		builder.setTitle(R.string.search_results);
+        		builder.setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.cancel();
+						removeDialog(DIALOG_ID_SEARCH);
+					}
+				});
+        		
+        		builder.setItems(addresses, new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						Address address = searchResults.get(which);
+						GeoPoint point = getPoint(address);
+						
+						destinationPoint = new PointOverlay(point, PointType.DESTINATION);
+						
+						redraw();
+						moveToDestination();
+						
+						removeDialog(DIALOG_ID_SEARCH);
+					}
+				});
+        		
+        		dialog = builder.create();
+        		break;
+        	default:
+        		dialog = null;
+        }
+        
+        return dialog;
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getSupportMenuInflater();
         menuInflater.inflate(R.menu.map, menu);
+        
+        SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
+        searchView.setOnQueryTextListener(new OnQueryTextListener() {
+			
+			@Override
+			public boolean onQueryTextSubmit(String query) {
+				searchResults = LocationHelper.stringToAddresses(getApplicationContext(), query);
+				
+				if (searchResults.size() > 0) {
+					showDialog(DIALOG_ID_SEARCH);
+				}
+				
+				return true;
+			}
+			
+			@Override
+			public boolean onQueryTextChange(String newText) {
+				return false;
+			}
+		});
         
         return super.onCreateOptionsMenu(menu);
     }
@@ -321,8 +398,6 @@ public class ShowMap extends SherlockMapActivity {
     
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-    	stopFollow();
-    	
 	    switch (item.getItemId()) {
 			case R.id.menu_save:
 				Editor editor = preferences.edit();
@@ -361,6 +436,8 @@ public class ShowMap extends SherlockMapActivity {
 				
 				return true;
 			case R.id.menu_distance:
+				stopFollow();
+				
 				if (distanceBarPanel.getVisibility() == View.GONE){ 
 					distanceBarPanel.setVisibility(View.VISIBLE);
 					moveToDestination();
@@ -414,8 +491,13 @@ public class ShowMap extends SherlockMapActivity {
     }
     
     private void stopFollow() {
-    	followLocation = false;
-    	invalidateOptionsMenu();
+    	// Only do this when followLocation is true.
+    	// If the search field is active, invalidating the menu will cause the keyboard
+    	// to pop open again. It's really annoying.
+    	if (followLocation) {
+	    	followLocation = false;
+	    	invalidateOptionsMenu();
+    	}
     }
 
     private void showLocation(Location location) {
@@ -466,6 +548,13 @@ public class ShowMap extends SherlockMapActivity {
     private GeoPoint getPoint(Location location) {
         Double lat = location.getLatitude() * 1E6;
         Double lng = location.getLongitude() * 1E6;
+
+        return new GeoPoint(lat.intValue(), lng.intValue());
+    }
+    
+    private GeoPoint getPoint(Address address) {
+        Double lat = address.getLatitude() * 1E6;
+        Double lng = address.getLongitude() * 1E6;
 
         return new GeoPoint(lat.intValue(), lng.intValue());
     }
