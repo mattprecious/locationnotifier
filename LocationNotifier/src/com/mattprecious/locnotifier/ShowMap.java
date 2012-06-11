@@ -224,11 +224,6 @@ public class ShowMap extends SherlockMapActivity {
             moveToLocation();
         }
 
-        // Register the listener with the Location Manager to receive location
-        // updates
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-
         int dest_lat = preferences.getInt("dest_lat", 0);
         int dest_lng = preferences.getInt("dest_lng", 0);
         float dest_radius = preferences.getFloat("dest_radius", 0);
@@ -257,6 +252,23 @@ public class ShowMap extends SherlockMapActivity {
 
         redraw();
         showHint();
+    }
+    
+    @Override
+    protected void onResume() {
+    	super.onResume();
+    	
+    	// Register the listener with the Location Manager to receive location
+        // updates
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+    }
+    
+    @Override
+    protected void onPause() {
+    	super.onPause();
+    	
+    	locationManager.removeUpdates(locationListener);
     }
 
     @Override
