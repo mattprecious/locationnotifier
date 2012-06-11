@@ -13,6 +13,7 @@
     <string name="status_go">Go!</string>
     <string name="status_stop">Stop</string>
     
+    <string name="category_notification">Notification</string>
     <string name="action_tone">Notification Ringtone</string>
     <string name="action_vibrate">Vibrate</string>
     <string name="action_insistent">Insistent</string>

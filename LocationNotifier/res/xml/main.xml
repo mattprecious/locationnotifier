@@ -49,22 +49,33 @@
 			
 		</PreferenceScreen>
 		
-		<RingtonePreference
-			android:key="tone"
-			android:title="@string/action_tone"
-			android:ringtoneType="notification"
-			android:showDefault="true"
-			android:showSilent="true" />
+		<PreferenceScreen
+		    android:key="screen_notification"
+		    android:title="@string/category_notification">
+		    
+		    <PreferenceCategory
+		        android:title="@string/category_notification">
+		        
+		    <RingtonePreference
+	            android:key="tone"
+	            android:title="@string/action_tone"
+	            android:ringtoneType="notification"
+	            android:showDefault="true"
+	            android:showSilent="true" />
+	        
+	        <CheckBoxPreference
+	            android:key="vibrate"
+	            android:title="@string/action_vibrate" />
+	            
+	        <CheckBoxPreference
+	            android:key="insistent"
+	            android:title="@string/action_insistent"
+	            android:summary="@string/action_insistent_summary" />
+		        
+		    </PreferenceCategory>
+		    
+		</PreferenceScreen>
 		
-		<CheckBoxPreference
-			android:key="vibrate"
-			android:title="@string/action_vibrate" />
-			
-		<CheckBoxPreference
-			android:key="insistent"
-			android:title="@string/action_insistent"
-			android:summary="@string/action_insistent_summary" />
-	
 	</PreferenceCategory>
 	
 	<PreferenceCategory
