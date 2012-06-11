@@ -4,6 +4,9 @@
     <string name="possessive_name">%s\'s</string>
     <string name="possessive_name_s">%s\'</string>
     
+    <string name="switch_yes">Yes</string>
+    <string name="switch_no">No</string>
+    
     <string name="destination_label">Destination</string>
     
     <string name="category_status">Status</string>

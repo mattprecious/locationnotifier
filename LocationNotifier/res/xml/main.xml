@@ -31,7 +31,7 @@
 			<PreferenceCategory
 				android:title="@string/category_sms">
 				
-				<CheckBoxPreference
+				<SwitchPreference
 					android:key="sms_enabled"
 					android:title="@string/sms_enabled" />
 				
@@ -63,14 +63,18 @@
 	            android:showDefault="true"
 	            android:showSilent="true" />
 	        
-	        <CheckBoxPreference
+	        <SwitchPreference
 	            android:key="vibrate"
-	            android:title="@string/action_vibrate" />
+	            android:title="@string/action_vibrate"
+	            android:switchTextOn="@string/switch_yes"
+	            android:switchTextOff="@string/switch_no" />
 	            
-	        <CheckBoxPreference
+	        <SwitchPreference
 	            android:key="insistent"
 	            android:title="@string/action_insistent"
-	            android:summary="@string/action_insistent_summary" />
+	            android:summary="@string/action_insistent_summary"
+                android:switchTextOn="@string/switch_yes"
+                android:switchTextOff="@string/switch_no" />
 		        
 		    </PreferenceCategory>
 		    
@@ -81,9 +85,11 @@
 	<PreferenceCategory
 	    android:title="@string/category_options">
 		
-	    <CheckBoxPreference
+	    <SwitchPreference
 	        android:key="imperial"
 			android:title="@string/options_imperial"
+            android:switchTextOn="@string/switch_yes"
+            android:switchTextOff="@string/switch_no"
 			android:defaultValue="0" />
 	        
 	</PreferenceCategory>

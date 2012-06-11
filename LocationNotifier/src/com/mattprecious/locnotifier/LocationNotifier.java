@@ -41,6 +41,7 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceScreen;
 import android.preference.RingtonePreference;
+import android.preference.SwitchPreference;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.ContactsContract.CommonDataKinds.StructuredName;
 import android.provider.ContactsContract.Contacts;
@@ -70,11 +71,11 @@ public class LocationNotifier extends PreferenceActivity {
 
     private PreferenceCategory actionsCategory;
     private RingtonePreference tonePreference;
-    private CheckBoxPreference vibratePreference;
-    private CheckBoxPreference insistentPreference;
+    private SwitchPreference vibratePreference;
+    private SwitchPreference insistentPreference;
 
     private PreferenceScreen smsScreen;
-    private CheckBoxPreference smsActivePreference;
+    private SwitchPreference smsActivePreference;
     private Preference smsContactPreference;
     private EditTextPreference smsMessagePreference;
     
@@ -102,11 +103,11 @@ public class LocationNotifier extends PreferenceActivity {
 
         actionsCategory         = (PreferenceCategory) findPreference("category_actions");
         tonePreference          = (RingtonePreference) findPreference("tone");
-        vibratePreference       = (CheckBoxPreference) findPreference("vibrate");
-        insistentPreference     = (CheckBoxPreference) findPreference("insistent");
+        vibratePreference       = (SwitchPreference) findPreference("vibrate");
+        insistentPreference     = (SwitchPreference) findPreference("insistent");
         
         smsScreen               = (PreferenceScreen) findPreference("screen_sms");
-        smsActivePreference     = (CheckBoxPreference) findPreference("sms_enabled");
+        smsActivePreference     = (SwitchPreference) findPreference("sms_enabled");
         smsContactPreference    = (Preference) findPreference("sms_contact");
         smsMessagePreference    = (EditTextPreference) findPreference("sms_message");
         
