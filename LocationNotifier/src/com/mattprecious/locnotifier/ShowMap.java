@@ -84,6 +84,7 @@ public class ShowMap extends SherlockMapActivity {
     private long distance;
     
     private boolean gpsEnabled;
+    private boolean followLocation;
 
     @Override
     protected void onCreate(Bundle icicle) {
@@ -130,6 +131,7 @@ public class ShowMap extends SherlockMapActivity {
         distance = (long) preferences.getFloat("dest_radius", MIN_DISTANCE);
         
         gpsEnabled = preferences.getBoolean("use_gps", true);
+        followLocation = false;
 
         overlayManager = new OverlayManager(this, mapView);
         overlayListener = overlayManager.createOverlay("overlayListener");
@@ -137,11 +139,15 @@ public class ShowMap extends SherlockMapActivity {
         overlayListener.setOnOverlayGestureListener(new ManagedOverlayGestureDetector.OnOverlayGestureListener() {
             @Override
             public boolean onZoom(ZoomEvent zoom, ManagedOverlay overlay) {
+            	stopFollow();
+            	
                 return false;
             }
 
             @Override
             public boolean onDoubleTap(MotionEvent e, ManagedOverlay overlay, GeoPoint point, ManagedOverlayItem item) {
+            	stopFollow();
+            	
                 mapController.animateTo(point);
                 mapController.zoomIn();
                 return true;
@@ -149,6 +155,8 @@ public class ShowMap extends SherlockMapActivity {
 
             @Override
             public void onLongPress(MotionEvent e, ManagedOverlay overlay) {
+            	stopFollow();
+            	
                 // due to the weird behavior stated below, it's possible to have
                 // the user lift their finger up while the vibration is queued
                 // and waiting, so cancel any pending vibrations
@@ -167,16 +175,22 @@ public class ShowMap extends SherlockMapActivity {
 
             @Override
             public void onLongPressFinished(MotionEvent e, ManagedOverlay overlay, GeoPoint point, ManagedOverlayItem item) {
+            	stopFollow();
+            	
                 showDestination(point);
             }
 
             @Override
             public boolean onScrolled(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY, ManagedOverlay overlay) {
+            	stopFollow();
+            	
                 return false;
             }
 
             @Override
             public boolean onSingleTap(MotionEvent e, ManagedOverlay overlay, GeoPoint point, ManagedOverlayItem item) {
+            	stopFollow();
+            	
                 // due to the weird behavior stated above, it's possible to have
                 // the user lift their finger up while the vibration is queued
                 // and waiting, so cancel any pending vibrations
@@ -296,11 +310,19 @@ public class ShowMap extends SherlockMapActivity {
     	menu.findItem(R.id.menu_gps_on).setVisible(gpsEnabled);
        	menu.findItem(R.id.menu_gps_off).setVisible(!gpsEnabled);
        	
+       		// TODO: Create a new icon for when we're currently following the user.
+       		// Similar to the compass icon in GMM
+//       	if (followLocation) {
+//       		menu.findItem(R.id.menu_location).setIcon()
+//       	}
+       	
     	return super.onPrepareOptionsMenu(menu);
     }
     
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+    	stopFollow();
+    	
 	    switch (item.getItemId()) {
 			case R.id.menu_save:
 				Editor editor = preferences.edit();
@@ -325,6 +347,8 @@ public class ShowMap extends SherlockMapActivity {
 				return true;
 			case R.id.menu_location:
 				moveToLocation();
+				startFollow();
+				
 				return true;
 			case R.id.menu_gps_on:
 				gpsEnabled = false;
@@ -337,7 +361,12 @@ public class ShowMap extends SherlockMapActivity {
 				
 				return true;
 			case R.id.menu_distance:
-				distanceBarPanel.setVisibility(distanceBarPanel.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
+				if (distanceBarPanel.getVisibility() == View.GONE){ 
+					distanceBarPanel.setVisibility(View.VISIBLE);
+					moveToDestination();
+				} else {
+					distanceBarPanel.setVisibility(View.GONE);
+				}
 				
 				return true;
 			default:
@@ -358,10 +387,35 @@ public class ShowMap extends SherlockMapActivity {
     }
     
     private void moveToLocation() {
-        if (bestLocation != null) {
-            mapController.animateTo(getPoint(bestLocation));
-            mapController.setZoom(17);
+    	if (bestLocation != null) {
+    		moveTo(getPoint(bestLocation));
+    	}
+    }
+    
+    private void moveToDestination() {
+    	if (destinationPoint != null) {
+    		moveTo(destinationPoint.getPoint());
+    	}
+    }
+    
+    private void moveTo(GeoPoint point) {
+    	if (point != null) {
+            mapController.animateTo(point);
+            
+            if (mapView.getZoomLevel() < 17) {
+            	mapController.setZoom(17);
+            }
         }
+    }
+    
+    private void startFollow() {
+    	followLocation = true;
+    	invalidateOptionsMenu();
+    }
+    
+    private void stopFollow() {
+    	followLocation = false;
+    	invalidateOptionsMenu();
     }
 
     private void showLocation(Location location) {
@@ -371,6 +425,10 @@ public class ShowMap extends SherlockMapActivity {
         locationRadius = new RadiusOverlay(point, location.getAccuracy(), PointType.LOCATION);
 
         redraw();
+        
+        if (followLocation) {
+        	moveToLocation();
+        }
     }
 
     private void showDestination(GeoPoint point) {
