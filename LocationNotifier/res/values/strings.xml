@@ -38,8 +38,8 @@
     <string name="distance_metres">%dm</string>
     <string name="distance_feet">%dft</string>
     
-    <string name="notification_awaiting">Awaiting your location...</string>
-    <string name="notification_tracking">%s until destination...</string>
+    <string name="notification_awaiting">Awaiting your location&#8230;</string>
+    <string name="notification_tracking">%s until destination&#8230;</string>
     <string name="notification_alert_title">Destination approaching!</string>
     <string name="notification_alert_text">Tap to clear.</string>
     
