@@ -33,7 +33,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -220,9 +219,7 @@ public class ShowMap extends SherlockMapActivity {
             public void onLocationChanged(Location location) {
                 // Called when a new location is found by the network location
                 // provider.
-                Log.d(getClass().getSimpleName(), "Location update. Radius: " + location.getAccuracy());
                 if (LocationHelper.isBetterLocation(location, bestLocation)) {
-                    Log.d(getClass().getSimpleName(), "Is better.");
                     bestLocation = location;
                     showLocation(location);
                 }
