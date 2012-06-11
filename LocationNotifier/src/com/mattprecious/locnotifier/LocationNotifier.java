@@ -192,7 +192,7 @@ public class LocationNotifier extends PreferenceActivity {
             String location = extras.getString(Intent.EXTRA_TEXT);
             location = location.split("\n")[0];
             
-            GeoPoint point = LocationHelper.addressToPoint(getApplicationContext(), location);
+            GeoPoint point = LocationHelper.getFirstPointFromSearch(getApplicationContext(), location);
             
             if (point != null) {
                 setDestination(point);

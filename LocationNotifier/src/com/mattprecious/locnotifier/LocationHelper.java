@@ -96,27 +96,35 @@ public class LocationHelper {
         return provider1.equals(provider2);
     }
 
-    public static GeoPoint addressToPoint(Context context, String addressStr) {
-        GeoPoint ret = null;
-
-        try {
+    public static GeoPoint getFirstPointFromSearch(Context context, String address) {
+    	List<Address> addressList = stringToAddresses(context, address);
+    	
+    	if (addressList == null) {
+    		return null;
+    	}
+    	
+        return addressToPoint(addressList.get(0));
+    }
+    
+    public static List<Address> stringToAddresses(Context context, String address) {
+    	try {
             Geocoder coder = new Geocoder(context);
-
-            List<Address> address = coder.getFromLocationName(addressStr, 1);
-            if (address == null || address.size() == 0) {
-                return ret;
-            }
-
-            Address location = address.get(0);
+            List<Address> result = coder.getFromLocationName(address, 10);
             
-            int latitude = (int) (location.getLatitude() * 1E6);
-            int longitude = (int) (location.getLongitude() * 1E6);
+            return result;
+    	} catch (IOException e) {
+    		return null;
+    	}
+    }
+    
+    public static GeoPoint addressToPoint(Address address) {
+    	if (address == null) {
+    		return null;
+    	}
+    	
+    	int latitude = (int) (address.getLatitude() * 1E6);
+        int longitude = (int) (address.getLongitude() * 1E6);
 
-            ret = new GeoPoint(latitude, longitude);
-        } catch (IOException e) {
-
-        }
-
-        return ret;
+        return new GeoPoint(latitude, longitude);
     }
 }
