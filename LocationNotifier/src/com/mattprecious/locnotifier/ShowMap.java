@@ -482,6 +482,8 @@ public class ShowMap extends SherlockMapActivity {
 		
 		if (searchResults != null && searchResults.size() > 0) {
 			showDialog(DIALOG_ID_SEARCH);
+		} else {
+			Toast.makeText(getApplicationContext(), R.string.no_results, Toast.LENGTH_SHORT).show();
 		}
     }
     

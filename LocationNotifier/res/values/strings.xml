@@ -51,6 +51,7 @@
     <string name="search_results">Search Results</string>
     
     <string name="hint_toast">Long press to set destination</string>
+    <string name="no_results">No results found</string>
     <string name="gps_button_on">GPS On</string>
     <string name="gps_button_off">GPS Off</string>
     <string name="save_button">Save</string>
