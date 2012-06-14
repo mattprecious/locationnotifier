@@ -270,6 +270,13 @@ public class ShowMap extends SherlockMapActivity {
         if (dest_radius != 0) {
             destinationRadius = new RadiusOverlay(destination, dest_radius, PointType.DESTINATION);
         }
+        
+        if (extras != null && extras.containsKey(Intent.EXTRA_TEXT)) {
+            String location = extras.getString(Intent.EXTRA_TEXT);
+            location = location.split("\n")[0];
+
+            search(location);
+        }
 
         redraw();
         showHint();
@@ -291,6 +298,17 @@ public class ShowMap extends SherlockMapActivity {
     	
     	locationManager.removeUpdates(locationListener);
     }
+    
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+    	super.onSaveInstanceState(outState);
+    	
+    	// this needs to be in here so that if the device is rotated
+    	// while the dialog is open, a second one will be created over
+    	// top of the existing one. Putting this in onDestroy does
+    	// nothing for some reason...
+    	removeDialog(DIALOG_ID_SEARCH);
+    }
 
     @Override
     protected void onDestroy() {
@@ -311,17 +329,21 @@ public class ShowMap extends SherlockMapActivity {
         
         switch(id) {
         	case DIALOG_ID_SEARCH:
+        		if (searchResults == null) {
+        			return null;
+        		}
+        		
         		String[] addresses = new String[searchResults.size()];
         		for (int i = 0; i < addresses.length; i++) {
         			addresses[i] = LocationHelper.addressToString(searchResults.get(i));
         		}
         		
         		builder.setTitle(R.string.search_results);
+        		builder.setCancelable(false);
         		builder.setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {
 					
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						dialog.cancel();
 						removeDialog(DIALOG_ID_SEARCH);
 					}
 				});
@@ -361,12 +383,7 @@ public class ShowMap extends SherlockMapActivity {
 			
 			@Override
 			public boolean onQueryTextSubmit(String query) {
-				searchResults = LocationHelper.stringToAddresses(getApplicationContext(), query);
-				
-				if (searchResults.size() > 0) {
-					showDialog(DIALOG_ID_SEARCH);
-				}
-				
+				search(query);
 				return true;
 			}
 			
@@ -458,6 +475,14 @@ public class ShowMap extends SherlockMapActivity {
             editor.putInt("hint_shown", hintShown + 1);
             editor.commit();
         }
+    }
+    
+    private void search(String query) {
+    	searchResults = LocationHelper.stringToAddresses(getApplicationContext(), query);
+		
+		if (searchResults != null && searchResults.size() > 0) {
+			showDialog(DIALOG_ID_SEARCH);
+		}
     }
     
     private void moveToLocation() {
