@@ -1,37 +1,40 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/menu_search"
-	    android:title="@string/search_button"
-	    android:icon="@android:drawable/ic_menu_search"
-	    android:showAsAction="always|collapseActionView"
-	    android:actionViewClass="android.widget.SearchView" />
-    
-    <item android:id="@+id/menu_save"
-        android:title="@string/save_button"
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/menu_search"
+        android:actionViewClass="android.widget.SearchView"
+        android:icon="@android:drawable/ic_menu_search"
+        android:showAsAction="always|collapseActionView"
+        android:title="@string/search_button"/>
+    <item
+        android:id="@+id/menu_save"
         android:icon="@android:drawable/ic_menu_save"
         android:orderInCategory="0"
-        android:showAsAction="always" />
-    
-    <item android:id="@+id/menu_gps_on"
-        android:title="@string/gps_button_on"
+        android:showAsAction="always"
+        android:title="@string/save_button"/>
+    <item
+        android:id="@+id/menu_gps_on"
         android:icon="@drawable/menu_gps_on"
         android:orderInCategory="1"
-        android:showAsAction="ifRoom" />
-    
-    <item android:id="@+id/menu_gps_off"
-        android:title="@string/gps_button_off"
+        android:showAsAction="ifRoom"
+        android:title="@string/gps_button_on"/>
+    <item
+        android:id="@+id/menu_gps_off"
         android:icon="@drawable/menu_gps_off"
         android:orderInCategory="1"
-        android:showAsAction="ifRoom" />
-    
-    <item android:id="@+id/menu_distance"
-        android:title="@string/distance_button"
+        android:showAsAction="ifRoom"
+        android:title="@string/gps_button_off"/>
+    <item
+        android:id="@+id/menu_distance"
         android:icon="@drawable/menu_distance"
         android:orderInCategory="1"
-        android:showAsAction="always" />
-    
-    <item android:id="@+id/menu_location"
-        android:title="@string/my_location_button"
+        android:showAsAction="always"
+        android:title="@string/distance_button"/>
+    <item
+        android:id="@+id/menu_location"
         android:icon="@android:drawable/ic_menu_mylocation"
         android:orderInCategory="1"
-        android:showAsAction="always" />
+        android:showAsAction="always"
+        android:title="@string/my_location_button"/>
+
 </menu>

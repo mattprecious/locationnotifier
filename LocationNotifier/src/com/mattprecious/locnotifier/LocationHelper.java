@@ -56,8 +56,7 @@ public class LocationHelper {
         boolean isSignificantlyOlder = timeDelta < -TWO_MINUTES;
         boolean isNewer = timeDelta > 0;
 
-        // If it's been more than two minutes since the current location, use
-        // the new location
+        // If it's been more than two minutes since the current location, use the new location
         // because the user has likely moved
         if (isSignificantlyNewer) {
             return true;
@@ -74,10 +73,10 @@ public class LocationHelper {
         boolean isSignificantlyLessAccurate = accuracyDelta > 200;
 
         // Check if the old and new location are from the same provider
-        boolean isFromSameProvider = isSameProvider(location.getProvider(), currentBestLocation.getProvider());
+        boolean isFromSameProvider = isSameProvider(location.getProvider(),
+                currentBestLocation.getProvider());
 
-        // Determine location quality using a combination of timeliness and
-        // accuracy
+        // Determine location quality using a combination of timeliness and accuracy
         if (isMoreAccurate) {
             return true;
         } else if (isNewer && !isLessAccurate) {
@@ -97,48 +96,48 @@ public class LocationHelper {
     }
 
     public static GeoPoint getFirstPointFromSearch(Context context, String address) {
-    	List<Address> addressList = stringToAddresses(context, address);
-    	
-    	if (addressList == null) {
-    		return null;
-    	}
-    	
+        List<Address> addressList = stringToAddresses(context, address);
+
+        if (addressList == null) {
+            return null;
+        }
+
         return addressToPoint(addressList.get(0));
     }
-    
+
     public static List<Address> stringToAddresses(Context context, String address) {
-    	try {
+        try {
             Geocoder coder = new Geocoder(context);
             List<Address> result = coder.getFromLocationName(address, 10);
-            
+
             return result;
-    	} catch (IOException e) {
-    		return null;
-    	}
+        } catch (IOException e) {
+            return null;
+        }
     }
-    
+
     public static GeoPoint addressToPoint(Address address) {
-    	if (address == null) {
-    		return null;
-    	}
-    	
-    	int latitude = (int) (address.getLatitude() * 1E6);
+        if (address == null) {
+            return null;
+        }
+
+        int latitude = (int) (address.getLatitude() * 1E6);
         int longitude = (int) (address.getLongitude() * 1E6);
 
         return new GeoPoint(latitude, longitude);
     }
-    
+
     public static String addressToString(Address address) {
-    	StringBuilder builder = new StringBuilder();
-    	
-    	for (int i = 0; i < address.getMaxAddressLineIndex(); i++) {
-    		if (i > 0) {
-    			builder.append(", ");
-    		}
-    		
-    		builder.append(address.getAddressLine(i));
-    	}
-    	
-    	return builder.toString();
+        StringBuilder builder = new StringBuilder();
+
+        for (int i = 0; i < address.getMaxAddressLineIndex(); i++) {
+            if (i > 0) {
+                builder.append(", ");
+            }
+
+            builder.append(address.getAddressLine(i));
+        }
+
+        return builder.toString();
     }
 }

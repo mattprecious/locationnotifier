@@ -52,7 +52,7 @@ import android.telephony.TelephonyManager;
 import com.google.android.maps.GeoPoint;
 
 public class LocationNotifier extends PreferenceActivity {
-    
+
     private static LocationNotifier instance;
 
     // static variables used to store information for dialogs
@@ -78,7 +78,7 @@ public class LocationNotifier extends PreferenceActivity {
     private SwitchPreference smsActivePreference;
     private Preference smsContactPreference;
     private EditTextPreference smsMessagePreference;
-    
+
     private Preference translatePreference;
 
     private final int REQUEST_CODE_CONTACT_PICKER = 1;
@@ -94,25 +94,25 @@ public class LocationNotifier extends PreferenceActivity {
 
         addPreferencesFromResource(R.xml.main);
 
-        preferences             = ((PreferenceScreen) findPreference("preferences")).getSharedPreferences();
+        preferences = ((PreferenceScreen) findPreference("preferences")).getSharedPreferences();
 
-        statusCategory          = (PreferenceCategory) findPreference("category_status");
-        destinationPreference   = (Preference) findPreference("set_destination");
-        goPreference            = (Preference) findPreference("go");
-        stopPreference          = (Preference) findPreference("stop");
+        statusCategory = (PreferenceCategory) findPreference("category_status");
+        destinationPreference = (Preference) findPreference("set_destination");
+        goPreference = (Preference) findPreference("go");
+        stopPreference = (Preference) findPreference("stop");
 
-        actionsCategory         = (PreferenceCategory) findPreference("category_actions");
-        tonePreference          = (RingtonePreference) findPreference("tone");
-        vibratePreference       = (SwitchPreference) findPreference("vibrate");
-        insistentPreference     = (SwitchPreference) findPreference("insistent");
-        
-        smsScreen               = (PreferenceScreen) findPreference("screen_sms");
-        smsActivePreference     = (SwitchPreference) findPreference("sms_enabled");
-        smsContactPreference    = (Preference) findPreference("sms_contact");
-        smsMessagePreference    = (EditTextPreference) findPreference("sms_message");
-        
-        translatePreference     = (Preference) findPreference("translate");
-        
+        actionsCategory = (PreferenceCategory) findPreference("category_actions");
+        tonePreference = (RingtonePreference) findPreference("tone");
+        vibratePreference = (SwitchPreference) findPreference("vibrate");
+        insistentPreference = (SwitchPreference) findPreference("insistent");
+
+        smsScreen = (PreferenceScreen) findPreference("screen_sms");
+        smsActivePreference = (SwitchPreference) findPreference("sms_enabled");
+        smsContactPreference = (Preference) findPreference("sms_contact");
+        smsMessagePreference = (EditTextPreference) findPreference("sms_message");
+
+        translatePreference = (Preference) findPreference("translate");
+
         TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         if (telephonyManager.getPhoneType() == TelephonyManager.PHONE_TYPE_NONE) {
             actionsCategory.removePreference(smsScreen);
@@ -159,15 +159,15 @@ public class LocationNotifier extends PreferenceActivity {
                 return false;
             }
         });
-        
+
         translatePreference.setOnPreferenceClickListener(new OnPreferenceClickListener() {
-            
+
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 intent.setData(Uri.parse("http://crowdin.net/project/location-notifier"));
                 startActivity(intent);
-                
+
                 return true;
             }
         });
@@ -184,24 +184,25 @@ public class LocationNotifier extends PreferenceActivity {
                 }
             }
         };
-        
+
         preferences.registerOnSharedPreferenceChangeListener(prefListener);
-        
+
         Bundle extras = getIntent().getExtras();
         if (extras != null && extras.containsKey(Intent.EXTRA_TEXT)) {
             String location = extras.getString(Intent.EXTRA_TEXT);
             location = location.split("\n")[0];
-            
-            GeoPoint point = LocationHelper.getFirstPointFromSearch(getApplicationContext(), location);
-            
+
+            GeoPoint point = LocationHelper.getFirstPointFromSearch(getApplicationContext(),
+                    location);
+
             if (point != null) {
                 setDestination(point);
             }
         }
-        
+
         // debug the change log
-        //preferences.edit().putInt("version_code", 0).commit();
-        
+        // preferences.edit().putInt("version_code", 0).commit();
+
         checkAndShowChangeLog();
     }
 
@@ -224,25 +225,30 @@ public class LocationNotifier extends PreferenceActivity {
 
                     String contactId = contactUri.getLastPathSegment();
 
-                    String[] columns = new String[] { StructuredName.DISPLAY_NAME, StructuredName.GIVEN_NAME };
+                    String[] columns = new String[] { StructuredName.DISPLAY_NAME,
+                            StructuredName.GIVEN_NAME };
 
                     String selection = Data.MIMETYPE + "=? AND " + StructuredName.CONTACT_ID + "=?";
-                    String[] selectionArgs = new String[] { StructuredName.CONTENT_ITEM_TYPE, contactId, };
+                    String[] selectionArgs = new String[] { StructuredName.CONTENT_ITEM_TYPE,
+                            contactId, };
 
-                    Cursor c = getContentResolver().query(Data.CONTENT_URI, columns, selection, selectionArgs, null);
+                    Cursor c = getContentResolver().query(Data.CONTENT_URI, columns, selection,
+                            selectionArgs, null);
 
                     contactName = null;
                     if (c.moveToFirst()) {
                         contactName = c.getString(c.getColumnIndex(StructuredName.GIVEN_NAME));
                         if (contactName == null) {
-                            contactName = c.getString(c.getColumnIndex(StructuredName.DISPLAY_NAME));
+                            contactName = c
+                                    .getString(c.getColumnIndex(StructuredName.DISPLAY_NAME));
                         }
                     }
 
                     c.close();
 
                     columns = new String[] { Phone.NUMBER, Phone.TYPE, Phone.LABEL };
-                    c = getContentResolver().query(Phone.CONTENT_URI, columns, Phone.CONTACT_ID + "=?", new String[] { contactId }, null);
+                    c = getContentResolver().query(Phone.CONTENT_URI, columns,
+                            Phone.CONTACT_ID + "=?", new String[] { contactId }, null);
 
                     if (c.getCount() == 1 && c.moveToFirst()) {
                         Editor editor = preferences.edit();
@@ -260,7 +266,8 @@ public class LocationNotifier extends PreferenceActivity {
                             if (phoneType == Phone.TYPE_CUSTOM) {
                                 phoneLabel = c.getString(c.getColumnIndex(Phone.LABEL));
                             } else {
-                                phoneLabel = (String) Phone.getTypeLabel(getResources(), phoneType, "");
+                                phoneLabel = (String) Phone.getTypeLabel(getResources(), phoneType,
+                                        "");
                             }
 
                             phoneNumbers[c.getPosition()] = phoneNumber;
@@ -294,11 +301,10 @@ public class LocationNotifier extends PreferenceActivity {
         if (contactName != null) {
             contactNameUpper = contactNameLower = contactName;
         }
-        
+
         String contactNamePossessive;
-        
-        // if need be in the future, break this condition out into a 
-        // language-aware helper function
+
+        // if need be in the future, break this condition out into a language-aware helper function
         if (contactNameUpper.charAt(contactNameUpper.length() - 1) == 's') {
             contactNamePossessive = getString(R.string.possessive_name_s, contactNameUpper);
         } else {
@@ -307,16 +313,14 @@ public class LocationNotifier extends PreferenceActivity {
 
         switch (id) {
             case DIALOG_ID_CHANGE_LOG:
-                builder.setTitle(R.string.whats_new)
-                       .setIcon(android.R.drawable.ic_dialog_info)
-                       .setMessage(R.string.change_log)
-                       .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                           
-                           public void onClick(DialogInterface dialog, int id) {
-                               dialog.cancel();
-                           }
-                       })
-                       ;
+                builder.setTitle(R.string.whats_new).setIcon(android.R.drawable.ic_dialog_info)
+                        .setMessage(R.string.change_log)
+                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
                 dialog = builder.create();
                 break;
             case DIALOG_ID_PHONE_PICKER:
@@ -334,7 +338,8 @@ public class LocationNotifier extends PreferenceActivity {
                 break;
             case DIALOG_ID_PHONE_PICKER_NO_NUMBERS:
                 builder.setTitle(getString(R.string.sms_no_numbers_title, contactNameUpper));
-                builder.setMessage(getString(R.string.sms_no_numbers_message, contactNameUpper, contactNameLower));
+                builder.setMessage(getString(R.string.sms_no_numbers_message, contactNameUpper,
+                        contactNameLower));
                 builder.setPositiveButton(R.string.ok, new OnClickListener() {
 
                     @Override
@@ -354,15 +359,15 @@ public class LocationNotifier extends PreferenceActivity {
     private void setDestination() {
         setDestination(null);
     }
-    
+
     private void setDestination(GeoPoint point) {
         Intent intent = new Intent(this, ShowMap.class);
-        
+
         if (point != null) {
             intent.putExtra(ShowMap.EXTRA_DEST_LAT, point.getLatitudeE6());
             intent.putExtra(ShowMap.EXTRA_DEST_LNG, point.getLongitudeE6());
         }
-        
+
         startActivity(intent);
     }
 
@@ -405,10 +410,10 @@ public class LocationNotifier extends PreferenceActivity {
             if (c.moveToFirst()) {
                 summary = c.getString(c.getColumnIndex(PhoneLookup.DISPLAY_NAME));
             }
-            
+
             c.close();
         }
-        
+
         if (summary == null) {
             summary = number;
         }
@@ -421,41 +426,40 @@ public class LocationNotifier extends PreferenceActivity {
      */
     private void updateTone() {
         String tone = preferences.getString("tone", null);
-        
+
         String title = "";
-        
+
         if (tone != null && tone.equals("")) {
             title = getString(R.string.silent);
         } else {
-            Uri uri = (tone == null) ? 
-                    RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION) :
-                    Uri.parse(tone);
-            
+            Uri uri = (tone == null) ? RingtoneManager
+                    .getDefaultUri(RingtoneManager.TYPE_NOTIFICATION) : Uri.parse(tone);
+
             Ringtone ringtone = RingtoneManager.getRingtone(getApplicationContext(), uri);
-            
+
             if (ringtone != null) {
                 title = ringtone.getTitle(getApplicationContext());
             }
         }
-        
+
         tonePreference.setSummary(title);
     }
-    
+
     private void checkAndShowChangeLog() {
         PackageManager packageManager = getPackageManager();
-        
+
         try {
             PackageInfo packageInfo = packageManager.getPackageInfo(getPackageName(), 0);
-            
+
             if (preferences.getInt("version_code", 0) != packageInfo.versionCode) {
                 showDialog(DIALOG_ID_CHANGE_LOG);
-                
+
                 Editor editor = preferences.edit();
                 editor.putInt("version_code", packageInfo.versionCode);
                 editor.commit();
             }
         } catch (NameNotFoundException e) {
-            
+
         }
     }
 }

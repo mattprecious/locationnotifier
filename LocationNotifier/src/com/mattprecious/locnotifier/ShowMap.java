@@ -59,7 +59,7 @@ import de.android1.overlaymanager.OverlayManager;
 import de.android1.overlaymanager.ZoomEvent;
 
 public class ShowMap extends SherlockMapActivity {
-	public static final long MIN_DISTANCE = 50;
+    public static final long MIN_DISTANCE = 50;
 
     public static final String EXTRA_DEST_LAT = "dest_lat";
     public static final String EXTRA_DEST_LNG = "dest_lng";
@@ -83,16 +83,16 @@ public class ShowMap extends SherlockMapActivity {
 
     private MapView mapView;
     private MapController mapController;
-    
+
     private LinearLayout distanceBarPanel;
     private SeekBar distanceBar;
     private long distance;
-    
+
     private boolean gpsEnabled;
     private boolean followLocation;
-    
+
     private List<Address> searchResults;
-    
+
     private final int DIALOG_ID_SEARCH = 1;
 
     @Override
@@ -100,9 +100,9 @@ public class ShowMap extends SherlockMapActivity {
         // TODO Auto-generated method stub
         super.onCreate(icicle);
         setContentView(R.layout.map);
-        
-//        ActionBar actionBar = getSupportActionBar();
-//        actionBar.setDisplayHomeAsUpEnabled(true);
+
+        // ActionBar actionBar = getSupportActionBar();
+        // actionBar.setDisplayHomeAsUpEnabled(true);
 
         Bundle extras = getIntent().getExtras();
 
@@ -112,102 +112,102 @@ public class ShowMap extends SherlockMapActivity {
 
         mapView = (MapView) findViewById(R.id.mapview);
         mapController = mapView.getController();
-        
+
         distanceBarPanel = (LinearLayout) findViewById(R.id.distance_bar_panel);
         distanceBar = (SeekBar) findViewById(R.id.distance_bar);
         distanceBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
-			private UpdateDistanceTask updateDistanceTask;
-			
-			@Override
-			public void onStopTrackingTouch(SeekBar seekBar) {
-				seekBar.setProgress(4);
-				updateDistanceTask.cancel(true);
-			}
-			
-			@Override
-			public void onStartTrackingTouch(SeekBar seekBar) {
-				updateDistanceTask = (UpdateDistanceTask) new UpdateDistanceTask().execute();
-			}
-			
-			@Override
-			public void onProgressChanged(SeekBar seekBar, int progress,
-					boolean fromUser) {
-				
-			}
-		});
-        
+            private UpdateDistanceTask updateDistanceTask;
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                seekBar.setProgress(4);
+                updateDistanceTask.cancel(true);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                updateDistanceTask = (UpdateDistanceTask) new UpdateDistanceTask().execute();
+            }
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+            }
+        });
+
         // TODO: Either change this preference type to a long or create a new preference
         distance = (long) preferences.getFloat("dest_radius", MIN_DISTANCE);
-        
+
         gpsEnabled = preferences.getBoolean("use_gps", true);
         followLocation = false;
 
         overlayManager = new OverlayManager(this, mapView);
         overlayListener = overlayManager.createOverlay("overlayListener");
 
-        overlayListener.setOnOverlayGestureListener(new ManagedOverlayGestureDetector.OnOverlayGestureListener() {
-            @Override
-            public boolean onZoom(ZoomEvent zoom, ManagedOverlay overlay) {
-            	stopFollow();
-            	
-                return false;
-            }
+        overlayListener
+                .setOnOverlayGestureListener(new ManagedOverlayGestureDetector.OnOverlayGestureListener() {
+                    @Override
+                    public boolean onZoom(ZoomEvent zoom, ManagedOverlay overlay) {
+                        stopFollow();
 
-            @Override
-            public boolean onDoubleTap(MotionEvent e, ManagedOverlay overlay, GeoPoint point, ManagedOverlayItem item) {
-            	stopFollow();
-            	
-                mapController.animateTo(point);
-                mapController.zoomIn();
-                return true;
-            }
+                        return false;
+                    }
 
-            @Override
-            public void onLongPress(MotionEvent e, ManagedOverlay overlay) {
-            	stopFollow();
-            	
-                // due to the weird behavior stated below, it's possible to have
-                // the user lift their finger up while the vibration is queued
-                // and waiting, so cancel any pending vibrations
-                vibrator.cancel();
-                
-                // for some reason, longPressFinished won't fire until quite a
-                // while after longPress fires... so delay the vibration by
-                // 450ms
-                long[] pattern = {
-                        450,
-                        50,
-                };
+                    @Override
+                    public boolean onDoubleTap(MotionEvent e, ManagedOverlay overlay,
+                            GeoPoint point, ManagedOverlayItem item) {
+                        stopFollow();
 
-                vibrator.vibrate(pattern, -1);
-            }
+                        mapController.animateTo(point);
+                        mapController.zoomIn();
+                        return true;
+                    }
 
-            @Override
-            public void onLongPressFinished(MotionEvent e, ManagedOverlay overlay, GeoPoint point, ManagedOverlayItem item) {
-            	stopFollow();
-            	
-                showDestination(point);
-            }
+                    @Override
+                    public void onLongPress(MotionEvent e, ManagedOverlay overlay) {
+                        stopFollow();
 
-            @Override
-            public boolean onScrolled(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY, ManagedOverlay overlay) {
-            	stopFollow();
-            	
-                return false;
-            }
+                        // due to the weird behavior stated below, it's possible to have the user
+                        // lift their finger up while the vibration is queued and waiting, so cancel
+                        // any pending vibrations
+                        vibrator.cancel();
 
-            @Override
-            public boolean onSingleTap(MotionEvent e, ManagedOverlay overlay, GeoPoint point, ManagedOverlayItem item) {
-            	stopFollow();
-            	
-                // due to the weird behavior stated above, it's possible to have
-                // the user lift their finger up while the vibration is queued
-                // and waiting, so cancel any pending vibrations
-                vibrator.cancel();
-                
-                return false;
-            }
-        });
+                        // for some reason, longPressFinished won't fire until quite a while after
+                        // longPress fires... so delay the vibration by 450ms
+                        long[] pattern = { 450, 50, };
+
+                        vibrator.vibrate(pattern, -1);
+                    }
+
+                    @Override
+                    public void onLongPressFinished(MotionEvent e, ManagedOverlay overlay,
+                            GeoPoint point, ManagedOverlayItem item) {
+                        stopFollow();
+
+                        showDestination(point);
+                    }
+
+                    @Override
+                    public boolean onScrolled(MotionEvent e1, MotionEvent e2, float distanceX,
+                            float distanceY, ManagedOverlay overlay) {
+                        stopFollow();
+
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onSingleTap(MotionEvent e, ManagedOverlay overlay,
+                            GeoPoint point, ManagedOverlayItem item) {
+                        stopFollow();
+
+                        // due to the weird behavior stated above, it's possible to have the user
+                        // lift their finger up while the vibration is queued and waiting, so cancel
+                        // any pending vibrations
+                        vibrator.cancel();
+
+                        return false;
+                    }
+                });
 
         overlayManager.populate();
 
@@ -217,8 +217,7 @@ public class ShowMap extends SherlockMapActivity {
         // Define a listener that responds to location updates
         locationListener = new LocationListener() {
             public void onLocationChanged(Location location) {
-                // Called when a new location is found by the network location
-                // provider.
+                // Called when a new location is found by the network location provider.
                 if (LocationHelper.isBetterLocation(location, bestLocation)) {
                     bestLocation = location;
                     showLocation(location);
@@ -250,15 +249,16 @@ public class ShowMap extends SherlockMapActivity {
         float dest_radius = preferences.getFloat("dest_radius", 0);
 
         boolean moveToDestination = false;
-        if (extras != null && extras.containsKey(EXTRA_DEST_LAT) && extras.containsKey(EXTRA_DEST_LNG)) {
+        if (extras != null && extras.containsKey(EXTRA_DEST_LAT)
+                && extras.containsKey(EXTRA_DEST_LNG)) {
             dest_lat = extras.getInt(EXTRA_DEST_LAT);
             dest_lng = extras.getInt(EXTRA_DEST_LNG);
-            
+
             moveToDestination = true;
         }
 
         GeoPoint destination = new GeoPoint(dest_lat, dest_lng);
-        
+
         if (moveToDestination) {
             mapController.animateTo(destination);
         }
@@ -270,7 +270,7 @@ public class ShowMap extends SherlockMapActivity {
         if (dest_radius != 0) {
             destinationRadius = new RadiusOverlay(destination, dest_radius, PointType.DESTINATION);
         }
-        
+
         if (extras != null && extras.containsKey(Intent.EXTRA_TEXT)) {
             String location = extras.getString(Intent.EXTRA_TEXT);
             location = location.split("\n")[0];
@@ -281,33 +281,33 @@ public class ShowMap extends SherlockMapActivity {
         redraw();
         showHint();
     }
-    
+
     @Override
     protected void onResume() {
-    	super.onResume();
-    	
-    	// Register the listener with the Location Manager to receive location
-        // updates
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+        super.onResume();
+
+        // Register the listener with the Location Manager to receive location updates
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0,
+                locationListener);
+        locationManager
+                .requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
     }
-    
+
     @Override
     protected void onPause() {
-    	super.onPause();
-    	
-    	locationManager.removeUpdates(locationListener);
+        super.onPause();
+
+        locationManager.removeUpdates(locationListener);
     }
-    
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-    	super.onSaveInstanceState(outState);
-    	
-    	// this needs to be in here so that if the device is rotated
-    	// while the dialog is open, a second one will be created over
-    	// top of the existing one. Putting this in onDestroy does
-    	// nothing for some reason...
-    	removeDialog(DIALOG_ID_SEARCH);
+        super.onSaveInstanceState(outState);
+
+        // this needs to be in here so that if the device is rotated while the dialog is open, a
+        // second one will be created over top of the existing one. Putting this in onDestroy does
+        // nothing for some reason...
+        removeDialog(DIALOG_ID_SEARCH);
     }
 
     @Override
@@ -321,55 +321,56 @@ public class ShowMap extends SherlockMapActivity {
     protected boolean isRouteDisplayed() {
         return false;
     }
-    
+
     @Override
     protected Dialog onCreateDialog(int id) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         Dialog dialog;
-        
-        switch(id) {
-        	case DIALOG_ID_SEARCH:
-        		if (searchResults == null) {
-        			return null;
-        		}
-        		
-        		String[] addresses = new String[searchResults.size()];
-        		for (int i = 0; i < addresses.length; i++) {
-        			addresses[i] = LocationHelper.addressToString(searchResults.get(i));
-        		}
-        		
-        		builder.setTitle(R.string.search_results);
-        		builder.setCancelable(false);
-        		builder.setNegativeButton(R.string.cancel_button, new DialogInterface.OnClickListener() {
-					
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						removeDialog(DIALOG_ID_SEARCH);
-					}
-				});
-        		
-        		builder.setItems(addresses, new DialogInterface.OnClickListener() {
-					
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						Address address = searchResults.get(which);
-						GeoPoint point = getPoint(address);
-						
-						destinationPoint = new PointOverlay(point, PointType.DESTINATION);
-						
-						redraw();
-						moveToDestination();
-						
-						removeDialog(DIALOG_ID_SEARCH);
-					}
-				});
-        		
-        		dialog = builder.create();
-        		break;
-        	default:
-        		dialog = null;
+
+        switch (id) {
+            case DIALOG_ID_SEARCH:
+                if (searchResults == null) {
+                    return null;
+                }
+
+                String[] addresses = new String[searchResults.size()];
+                for (int i = 0; i < addresses.length; i++) {
+                    addresses[i] = LocationHelper.addressToString(searchResults.get(i));
+                }
+
+                builder.setTitle(R.string.search_results);
+                builder.setCancelable(false);
+                builder.setNegativeButton(R.string.cancel_button,
+                        new DialogInterface.OnClickListener() {
+
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                removeDialog(DIALOG_ID_SEARCH);
+                            }
+                        });
+
+                builder.setItems(addresses, new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Address address = searchResults.get(which);
+                        GeoPoint point = getPoint(address);
+
+                        destinationPoint = new PointOverlay(point, PointType.DESTINATION);
+
+                        redraw();
+                        moveToDestination();
+
+                        removeDialog(DIALOG_ID_SEARCH);
+                    }
+                });
+
+                dialog = builder.create();
+                break;
+            default:
+                dialog = null;
         }
-        
+
         return dialog;
     }
 
@@ -377,151 +378,151 @@ public class ShowMap extends SherlockMapActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getSupportMenuInflater();
         menuInflater.inflate(R.menu.map, menu);
-        
+
         SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
         searchView.setOnQueryTextListener(new OnQueryTextListener() {
-			
-			@Override
-			public boolean onQueryTextSubmit(String query) {
-				search(query);
-				return true;
-			}
-			
-			@Override
-			public boolean onQueryTextChange(String newText) {
-				return false;
-			}
-		});
-        
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                search(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+
         return super.onCreateOptionsMenu(menu);
     }
-    
+
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-    	menu.findItem(R.id.menu_gps_on).setVisible(gpsEnabled);
-       	menu.findItem(R.id.menu_gps_off).setVisible(!gpsEnabled);
-       	
-       		// TODO: Create a new icon for when we're currently following the user.
-       		// Similar to the compass icon in GMM
-//       	if (followLocation) {
-//       		menu.findItem(R.id.menu_location).setIcon()
-//       	}
-       	
-    	return super.onPrepareOptionsMenu(menu);
+        menu.findItem(R.id.menu_gps_on).setVisible(gpsEnabled);
+        menu.findItem(R.id.menu_gps_off).setVisible(!gpsEnabled);
+
+        // TODO: Create a new icon for when we're currently following the user.
+        // Similar to the compass icon in GMM
+        // if (followLocation) {
+        // menu.findItem(R.id.menu_location).setIcon()
+        // }
+
+        return super.onPrepareOptionsMenu(menu);
     }
-    
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-	    switch (item.getItemId()) {
-			case R.id.menu_save:
-				Editor editor = preferences.edit();
-				
-				if (destinationPoint != null) {
-					GeoPoint destination = destinationPoint.getPoint();
-					
-					editor.putInt("dest_lat", destination.getLatitudeE6());
-					editor.putInt("dest_lng", destination.getLongitudeE6());
-				}
-				
-			    editor.putFloat("dest_radius", distance);
-		        editor.putBoolean("use_gps", gpsEnabled);
-				editor.commit();
-				
-				if (LocationService.isRunning()) {
-					stopService(new Intent(getApplicationContext(), LocationService.class));
-					startService(new Intent(getApplicationContext(), LocationService.class));
-				}
-				
-				finish();
-				return true;
-			case R.id.menu_location:
-				moveToLocation();
-				startFollow();
-				
-				return true;
-			case R.id.menu_gps_on:
-				gpsEnabled = false;
-				invalidateOptionsMenu();
-				
-				return true;
-			case R.id.menu_gps_off:
-				gpsEnabled = true;
-				invalidateOptionsMenu();
-				
-				return true;
-			case R.id.menu_distance:
-				stopFollow();
-				
-				if (distanceBarPanel.getVisibility() == View.GONE){ 
-					distanceBarPanel.setVisibility(View.VISIBLE);
-					moveToDestination();
-				} else {
-					distanceBarPanel.setVisibility(View.GONE);
-				}
-				
-				return true;
-			default:
-				return super.onOptionsItemSelected(item);
-    	}
+        switch (item.getItemId()) {
+            case R.id.menu_save:
+                Editor editor = preferences.edit();
+
+                if (destinationPoint != null) {
+                    GeoPoint destination = destinationPoint.getPoint();
+
+                    editor.putInt("dest_lat", destination.getLatitudeE6());
+                    editor.putInt("dest_lng", destination.getLongitudeE6());
+                }
+
+                editor.putFloat("dest_radius", distance);
+                editor.putBoolean("use_gps", gpsEnabled);
+                editor.commit();
+
+                if (LocationService.isRunning()) {
+                    stopService(new Intent(getApplicationContext(), LocationService.class));
+                    startService(new Intent(getApplicationContext(), LocationService.class));
+                }
+
+                finish();
+                return true;
+            case R.id.menu_location:
+                moveToLocation();
+                startFollow();
+
+                return true;
+            case R.id.menu_gps_on:
+                gpsEnabled = false;
+                invalidateOptionsMenu();
+
+                return true;
+            case R.id.menu_gps_off:
+                gpsEnabled = true;
+                invalidateOptionsMenu();
+
+                return true;
+            case R.id.menu_distance:
+                stopFollow();
+
+                if (distanceBarPanel.getVisibility() == View.GONE) {
+                    distanceBarPanel.setVisibility(View.VISIBLE);
+                    moveToDestination();
+                } else {
+                    distanceBarPanel.setVisibility(View.GONE);
+                }
+
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
-    
+
     private void showHint() {
-        int hintShown = preferences.getInt("hint_shown", 0); 
+        int hintShown = preferences.getInt("hint_shown", 0);
         if (hintShown < 5) {
             Toast hintToast = Toast.makeText(this, R.string.hint_toast, Toast.LENGTH_LONG);
             hintToast.show();
-            
+
             Editor editor = preferences.edit();
             editor.putInt("hint_shown", hintShown + 1);
             editor.commit();
         }
     }
-    
+
     private void search(String query) {
-    	searchResults = LocationHelper.stringToAddresses(getApplicationContext(), query);
-		
-		if (searchResults != null && searchResults.size() > 0) {
-			showDialog(DIALOG_ID_SEARCH);
-		} else {
-			Toast.makeText(getApplicationContext(), R.string.no_results, Toast.LENGTH_SHORT).show();
-		}
+        searchResults = LocationHelper.stringToAddresses(getApplicationContext(), query);
+
+        if (searchResults != null && searchResults.size() > 0) {
+            showDialog(DIALOG_ID_SEARCH);
+        } else {
+            Toast.makeText(getApplicationContext(), R.string.no_results, Toast.LENGTH_SHORT).show();
+        }
     }
-    
+
     private void moveToLocation() {
-    	if (bestLocation != null) {
-    		moveTo(getPoint(bestLocation));
-    	}
+        if (bestLocation != null) {
+            moveTo(getPoint(bestLocation));
+        }
     }
-    
+
     private void moveToDestination() {
-    	if (destinationPoint != null) {
-    		moveTo(destinationPoint.getPoint());
-    	}
+        if (destinationPoint != null) {
+            moveTo(destinationPoint.getPoint());
+        }
     }
-    
+
     private void moveTo(GeoPoint point) {
-    	if (point != null) {
+        if (point != null) {
             mapController.animateTo(point);
-            
+
             if (mapView.getZoomLevel() < 17) {
-            	mapController.setZoom(17);
+                mapController.setZoom(17);
             }
         }
     }
-    
+
     private void startFollow() {
-    	followLocation = true;
-    	invalidateOptionsMenu();
+        followLocation = true;
+        invalidateOptionsMenu();
     }
-    
+
     private void stopFollow() {
-    	// Only do this when followLocation is true.
-    	// If the search field is active, invalidating the menu will cause the keyboard
-    	// to pop open again. It's really annoying.
-    	if (followLocation) {
-	    	followLocation = false;
-	    	invalidateOptionsMenu();
-    	}
+        // Only do this when followLocation is true.
+        // If the search field is active, invalidating the menu will cause the keyboard to pop open
+        // again. It's really annoying.
+        if (followLocation) {
+            followLocation = false;
+            invalidateOptionsMenu();
+        }
     }
 
     private void showLocation(Location location) {
@@ -531,9 +532,9 @@ public class ShowMap extends SherlockMapActivity {
         locationRadius = new RadiusOverlay(point, location.getAccuracy(), PointType.LOCATION);
 
         redraw();
-        
+
         if (followLocation) {
-        	moveToLocation();
+            moveToLocation();
         }
     }
 
@@ -575,43 +576,45 @@ public class ShowMap extends SherlockMapActivity {
 
         return new GeoPoint(lat.intValue(), lng.intValue());
     }
-    
+
     private GeoPoint getPoint(Address address) {
         Double lat = address.getLatitude() * 1E6;
         Double lng = address.getLongitude() * 1E6;
 
         return new GeoPoint(lat.intValue(), lng.intValue());
     }
-    
+
     public class UpdateDistanceTask extends AsyncTask<Void, Void, Void> {
-    	@Override
-    	protected Void doInBackground(Void... params) {
-    		while (!this.isCancelled()) {
-    			long modifier = Math.abs(distanceBar.getProgress() - 4);
-    			long adjustedModifier = (long) Math.pow(2, modifier);
-    			long signedModifier = distanceBar.getProgress() < 4 ? -adjustedModifier : adjustedModifier;
-    			
-	    		distance = Math.max(distance + signedModifier, MIN_DISTANCE);
-	    		destinationRadius = new RadiusOverlay(destinationPoint.getPoint(), distance, PointType.DESTINATION);
-	    		
-	    		mapView.post(new Runnable() {
-					
-					@Override
-					public void run() {
-						redraw();
-						
-					}
-				});
-	    		
-	    		try {
-	    			Thread.sleep(100);
-	    		} catch (InterruptedException e) {
-	    			// do nothing
-	    		}
-    		}
-    		
-    		return null;
-    	}
+        @Override
+        protected Void doInBackground(Void... params) {
+            while (!this.isCancelled()) {
+                long modifier = Math.abs(distanceBar.getProgress() - 4);
+                long adjustedModifier = (long) Math.pow(2, modifier);
+                long signedModifier = distanceBar.getProgress() < 4 ? -adjustedModifier
+                        : adjustedModifier;
+
+                distance = Math.max(distance + signedModifier, MIN_DISTANCE);
+                destinationRadius = new RadiusOverlay(destinationPoint.getPoint(), distance,
+                        PointType.DESTINATION);
+
+                mapView.post(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        redraw();
+
+                    }
+                });
+
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    // do nothing
+                }
+            }
+
+            return null;
+        }
     }
 
 }

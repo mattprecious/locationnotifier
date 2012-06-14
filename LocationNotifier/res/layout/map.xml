@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
-    android:theme="@android:style/Theme.NoTitleBar">
+    android:theme="@android:style/Theme.NoTitleBar" >
 
     <com.google.android.maps.MapView
         android:id="@+id/mapview"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:clickable="true"
-        android:apiKey="@string/maps_key" />
-    
+        android:apiKey="@string/maps_key"
+        android:clickable="true" />
+
     <LinearLayout
         android:id="@+id/distance_bar_panel"
         android:layout_width="fill_parent"
@@ -16,16 +16,15 @@
         android:layout_gravity="bottom"
         android:background="#191E23"
         android:padding="10dp"
-        android:visibility="gone">
-    
-	    <SeekBar
-	        android:id="@+id/distance_bar"
-	        android:layout_width="fill_parent"
-	        android:layout_height="wrap_content"
-	        android:progress="4"
-	        android:max="8"
-	        android:progressDrawable="@drawable/distancebar" />
-    
+        android:visibility="gone" >
+
+        <SeekBar
+            android:id="@+id/distance_bar"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:max="8"
+            android:progress="4"
+            android:progressDrawable="@drawable/distancebar" />
     </LinearLayout>
 
 </merge>

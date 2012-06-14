@@ -27,36 +27,36 @@ import com.google.android.maps.Projection;
 import com.mattprecious.locnotifier.RadiusOverlay.PointType;
 
 public class PointOverlay extends Overlay {
-    
+
     private GeoPoint geoPoint;
     private PointType type;
-    
+
     public PointOverlay(GeoPoint geoPoint, PointType type) {
         this.geoPoint = geoPoint;
         this.type = type;
     }
-    
+
     public GeoPoint getPoint() {
         return geoPoint;
     }
-    
+
     @Override
     public void draw(Canvas canvas, MapView mapView, boolean shadow) {
         super.draw(canvas, mapView, shadow);
-        
+
         Projection projection = mapView.getProjection();
-        
+
         Point point = new Point();
         projection.toPixels(geoPoint, point);
-        
+
         Paint fill = new Paint();
         fill.setAntiAlias(true);
         fill.setStyle(Paint.Style.FILL);
-        
+
         Paint stroke = new Paint();
         stroke.setAntiAlias(true);
         stroke.setStyle(Paint.Style.STROKE);
-        
+
         if (type == PointType.LOCATION) {
             fill.setARGB(255, 16, 91, 99);
             stroke.setARGB(255, 11, 66, 57);
@@ -64,9 +64,9 @@ public class PointOverlay extends Overlay {
             fill.setARGB(255, 189, 73, 50);
             stroke.setARGB(255, 146, 20, 12);
         }
-        
+
         canvas.drawCircle(point.x, point.y, 10, fill);
         canvas.drawCircle(point.x, point.y, 10, stroke);
     }
-    
+
 }

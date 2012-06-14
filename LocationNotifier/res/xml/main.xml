@@ -1,106 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-	android:key="preferences">
-	
-	<PreferenceCategory
-		android:key="category_status"
-		android:title="@string/category_status">
-		
-		<Preference
-			android:key="set_destination" 
-			android:title="@string/status_destination" />
-			
-		<Preference
-			android:key="go"
-			android:title="@string/status_go" />
-			
-		<Preference
-			android:key="stop" 
-			android:title="@string/status_stop" />
-	
-	</PreferenceCategory>
-	
-	<PreferenceCategory
-		android:key="category_actions"
-		android:title="@string/category_actions">
-		
-		<PreferenceScreen
-			android:key="screen_sms"
-			android:title="@string/category_sms">
-			
-			<PreferenceCategory
-				android:title="@string/category_sms">
-				
-				<SwitchPreference
-					android:key="sms_enabled"
-					android:title="@string/sms_enabled" />
-				
-				<Preference
-					android:key="sms_contact"
-					android:dependency="sms_enabled"
-					android:title="@string/sms_contact" />
-				
-				<EditTextPreference
-					android:key="sms_message"
-					android:dependency="sms_enabled"
-					android:title="@string/sms_message" />
-	
-			</PreferenceCategory>
-			
-		</PreferenceScreen>
-		
-		<PreferenceScreen
-		    android:key="screen_notification"
-		    android:title="@string/category_notification">
-		    
-		    <PreferenceCategory
-		        android:title="@string/category_notification">
-		        
-		    <RingtonePreference
-	            android:key="tone"
-	            android:title="@string/action_tone"
-	            android:ringtoneType="notification"
-	            android:showDefault="true"
-	            android:showSilent="true" />
-	        
-	        <SwitchPreference
-	            android:key="vibrate"
-	            android:title="@string/action_vibrate"
-	            android:switchTextOn="@string/switch_yes"
-	            android:switchTextOff="@string/switch_no" />
-	            
-	        <SwitchPreference
-	            android:key="insistent"
-	            android:title="@string/action_insistent"
-	            android:summary="@string/action_insistent_summary"
-                android:switchTextOn="@string/switch_yes"
-                android:switchTextOff="@string/switch_no" />
-		        
-		    </PreferenceCategory>
-		    
-		</PreferenceScreen>
-		
-	</PreferenceCategory>
-	
-	<PreferenceCategory
-	    android:title="@string/category_options">
-		
-	    <SwitchPreference
-	        android:key="imperial"
-			android:title="@string/options_imperial"
-            android:switchTextOn="@string/switch_yes"
+    android:key="preferences" >
+
+    <PreferenceCategory
+        android:key="category_status"
+        android:title="@string/category_status" >
+        <Preference
+            android:key="set_destination"
+            android:title="@string/status_destination" />
+        <Preference
+            android:key="go"
+            android:title="@string/status_go" />
+        <Preference
+            android:key="stop"
+            android:title="@string/status_stop" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:key="category_actions"
+        android:title="@string/category_actions" >
+        <PreferenceScreen
+            android:key="screen_sms"
+            android:title="@string/category_sms" >
+            <PreferenceCategory android:title="@string/category_sms" >
+                <SwitchPreference
+                    android:key="sms_enabled"
+                    android:title="@string/sms_enabled" />
+
+                <Preference
+                    android:dependency="sms_enabled"
+                    android:key="sms_contact"
+                    android:title="@string/sms_contact" />
+
+                <EditTextPreference
+                    android:dependency="sms_enabled"
+                    android:key="sms_message"
+                    android:title="@string/sms_message" />
+            </PreferenceCategory>
+        </PreferenceScreen>
+        <PreferenceScreen
+            android:key="screen_notification"
+            android:title="@string/category_notification" >
+            <PreferenceCategory android:title="@string/category_notification" >
+                <RingtonePreference
+                    android:key="tone"
+                    android:ringtoneType="notification"
+                    android:showDefault="true"
+                    android:showSilent="true"
+                    android:title="@string/action_tone" />
+
+                <SwitchPreference
+                    android:key="vibrate"
+                    android:switchTextOff="@string/switch_no"
+                    android:switchTextOn="@string/switch_yes"
+                    android:title="@string/action_vibrate" />
+                <SwitchPreference
+                    android:key="insistent"
+                    android:summary="@string/action_insistent_summary"
+                    android:switchTextOff="@string/switch_no"
+                    android:switchTextOn="@string/switch_yes"
+                    android:title="@string/action_insistent" />
+            </PreferenceCategory>
+        </PreferenceScreen>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/category_options" >
+        <SwitchPreference
+            android:defaultValue="0"
+            android:key="imperial"
             android:switchTextOff="@string/switch_no"
-			android:defaultValue="0" />
-	        
-	</PreferenceCategory>
-	
-	<PreferenceCategory
-		android:title="@string/category_more">
-			
-		<Preference
-			android:key="translate"
-			android:title="@string/translate" />
-	
-	</PreferenceCategory>
+            android:switchTextOn="@string/switch_yes"
+            android:title="@string/options_imperial" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/category_more" >
+        <Preference
+            android:key="translate"
+            android:title="@string/translate" />
+    </PreferenceCategory>
 
 </PreferenceScreen>

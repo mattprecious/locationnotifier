@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<animation-list android:oneshot="false"
-	xmlns:android="http://schemas.android.com/apk/res/android">
-	
-	<item android:duration="200" android:drawable="@drawable/notification_alert_anim0" />
-	<item android:duration="200" android:drawable="@drawable/notification_alert_anim1" />
-	
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:oneshot="false" >
+
+    <item
+        android:drawable="@drawable/notification_alert_anim0"
+        android:duration="200"/>
+    <item
+        android:drawable="@drawable/notification_alert_anim1"
+        android:duration="200"/>
+
 </animation-list>

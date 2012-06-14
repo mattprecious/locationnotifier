@@ -73,7 +73,8 @@ public class LocationService extends Service {
 
         radius = preferences.getFloat("dest_radius", 0);
 
-        notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager = (NotificationManager) getApplicationContext().getSystemService(
+                Context.NOTIFICATION_SERVICE);
         locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
         locationListener = new LocationListener() {
@@ -92,10 +93,12 @@ public class LocationService extends Service {
             }
         };
 
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0,
+                locationListener);
 
         if (preferences.getBoolean("use_gps", false)) {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0,
+                    locationListener);
         }
 
         Log.d(getClass().getSimpleName(), "Watching your location"); // creepy
@@ -137,20 +140,24 @@ public class LocationService extends Service {
 
     private void approachingDestination() {
         Log.d(getClass().getSimpleName(), "Within distance to destination");
-        
+
         locationManager.removeUpdates(locationListener);
 
-        PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, new Intent(), 0);
+        PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0,
+                new Intent(), 0);
 
         String notifTitle = getString(R.string.notification_alert_title);
         String notifText = getString(R.string.notification_alert_text);
 
-        Notification notification = new Notification(R.drawable.notification_alert, notifTitle, System.currentTimeMillis());
-        notification.setLatestEventInfo(getApplicationContext(), notifTitle, notifText, contentIntent);
+        Notification notification = new Notification(R.drawable.notification_alert, notifTitle,
+                System.currentTimeMillis());
+        notification.setLatestEventInfo(getApplicationContext(), notifTitle, notifText,
+                contentIntent);
         notification.flags |= Notification.FLAG_AUTO_CANCEL;
 
         String tone = preferences.getString("tone", null);
-        Uri toneUri = (tone == null) ? RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION) : Uri.parse(tone);
+        Uri toneUri = (tone == null) ? RingtoneManager
+                .getDefaultUri(RingtoneManager.TYPE_NOTIFICATION) : Uri.parse(tone);
 
         notification.sound = toneUri;
 
@@ -160,7 +167,7 @@ public class LocationService extends Service {
 
             // vibrate 3 short times
             long[] pattern = { 0, shortVib, shortPause, shortVib, shortPause, shortVib, };
-            
+
             notification.vibrate = pattern;
         }
 
@@ -174,12 +181,12 @@ public class LocationService extends Service {
         }
 
         notificationManager.notify(0, notification);
-        
+
         // send sms
         if (preferences.getBoolean("sms_enabled", false)) {
             String number = preferences.getString("sms_contact", null);
             String message = preferences.getString("sms_message", null);
-            
+
             if (number != null && message != null) {
                 SmsManager smsManager = SmsManager.getDefault();
                 smsManager.sendTextMessage(number, null, message, null, null);
@@ -196,19 +203,24 @@ public class LocationService extends Service {
     private void updateRunningNotification(float distance) {
         String message;
         if (distance == -1) {
-        	message = getString(R.string.notification_awaiting);
+            message = getString(R.string.notification_awaiting);
         } else {
-        	boolean imperial = preferences.getBoolean("imperial", false);
-        	int distanceStrId = imperial ? R.string.distance_feet : R.string.distance_metres;
-        	long displayDistance = imperial ? Math.round(distance * 3.2808399) : Math.round(distance);
-        	
-        	message = getString(R.string.notification_tracking, getString(distanceStrId, displayDistance));
-        }
-        
-        Notification runningNotification = new Notification(R.drawable.notification_running, null, 0);
+            boolean imperial = preferences.getBoolean("imperial", false);
+            int distanceStrId = imperial ? R.string.distance_feet : R.string.distance_metres;
+            long displayDistance = imperial ? Math.round(distance * 3.2808399) : Math
+                    .round(distance);
 
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, LocationNotifier.class), 0);
-        runningNotification.setLatestEventInfo(this, getString(R.string.app_name), message, contentIntent);
+            message = getString(R.string.notification_tracking,
+                    getString(distanceStrId, displayDistance));
+        }
+
+        Notification runningNotification = new Notification(R.drawable.notification_running, null,
+                0);
+
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this,
+                LocationNotifier.class), 0);
+        runningNotification.setLatestEventInfo(this, getString(R.string.app_name), message,
+                contentIntent);
         startForeground(R.string.app_name, runningNotification);
     }
 
