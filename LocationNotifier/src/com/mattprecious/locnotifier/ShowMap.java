@@ -20,6 +20,7 @@ import java.util.List;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
@@ -98,7 +99,8 @@ public class ShowMap extends SherlockMapActivity {
     private List<Address> searchResults;
 
     private final int DIALOG_ID_SEARCH = 1;
-    private final int DIALOG_ID_SEARCH_RESULTS = 2;
+    private final int DIALOG_ID_SEARCHING = 2;
+    private final int DIALOG_ID_SEARCH_RESULTS = 3;
 
     @Override
     protected void onCreate(Bundle icicle) {
@@ -353,6 +355,9 @@ public class ShowMap extends SherlockMapActivity {
                 dialog = builder.create();
 
                 break;
+            case DIALOG_ID_SEARCHING:
+                dialog = ProgressDialog.show(this, null, getString(R.string.searching), true);
+                break;
             case DIALOG_ID_SEARCH_RESULTS:
                 if (searchResults == null) {
                     return null;
@@ -520,13 +525,7 @@ public class ShowMap extends SherlockMapActivity {
     }
 
     private void search(String query) {
-        searchResults = LocationHelper.stringToAddresses(getApplicationContext(), query);
-
-        if (searchResults != null && searchResults.size() > 0) {
-            showDialog(DIALOG_ID_SEARCH_RESULTS);
-        } else {
-            Toast.makeText(getApplicationContext(), R.string.no_results, Toast.LENGTH_SHORT).show();
-        }
+        new SearchTask().execute(query);
     }
 
     private void moveToLocation() {
@@ -623,6 +622,32 @@ public class ShowMap extends SherlockMapActivity {
         Double lng = address.getLongitude() * 1E6;
 
         return new GeoPoint(lat.intValue(), lng.intValue());
+    }
+
+    public class SearchTask extends AsyncTask<String, Void, List<Address>> {
+
+        @Override
+        protected void onPreExecute() {
+            showDialog(DIALOG_ID_SEARCHING);
+        }
+
+        @Override
+        public List<Address> doInBackground(String... query) {
+            return LocationHelper.stringToAddresses(getApplicationContext(), query[0]);
+        }
+
+        @Override
+        protected void onPostExecute(List<Address> result) {
+            searchResults = result;
+            dismissDialog(DIALOG_ID_SEARCHING);
+
+            if (searchResults != null && searchResults.size() > 0) {
+                showDialog(DIALOG_ID_SEARCH_RESULTS);
+            } else {
+                Toast.makeText(getApplicationContext(), R.string.no_results, Toast.LENGTH_SHORT)
+                        .show();
+            }
+        }
     }
 
     public class UpdateDistanceTask extends AsyncTask<Void, Void, Void> {
