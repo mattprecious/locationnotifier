@@ -337,14 +337,15 @@ public class ShowMap extends SherlockMapActivity {
                 LinearLayout searchDialog = (LinearLayout) LayoutInflater.from(
                         getApplicationContext()).inflate(R.layout.search_dialog, null);
                 builder.setView(searchDialog);
-                
+
                 builder.setTitle(R.string.search);
                 builder.setPositiveButton(R.string.ok, new OnClickListener() {
-                    
+
                     @Override
                     public void onClick(DialogInterface dialogInterface, int which) {
                         Dialog dialog = (Dialog) dialogInterface;
-                        EditText queryText = (EditText) dialog.findViewById(R.id.search_dialog_text);
+                        EditText queryText = (EditText) dialog
+                                .findViewById(R.id.search_dialog_text);
                         search(queryText.getText().toString());
                     }
                 });
@@ -483,7 +484,7 @@ public class ShowMap extends SherlockMapActivity {
                             Toast.LENGTH_SHORT).show();
                     return true;
                 }
-                
+
                 stopFollow();
 
                 if (distanceBarPanel.getVisibility() == View.GONE) {
