@@ -48,6 +48,7 @@
     <string name="notification_alert_title">Destination approaching!</string>
     <string name="notification_alert_text">Tap to clear.</string>
     
+    <string name="search">Search</string>
     <string name="search_results">Search Results</string>
     
     <string name="hint_toast">Long press to set destination</string>

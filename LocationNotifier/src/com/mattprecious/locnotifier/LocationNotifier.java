@@ -33,7 +33,6 @@ import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
@@ -41,7 +40,6 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceScreen;
 import android.preference.RingtonePreference;
-import android.preference.SwitchPreference;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.ContactsContract.CommonDataKinds.StructuredName;
 import android.provider.ContactsContract.Contacts;
@@ -71,11 +69,11 @@ public class LocationNotifier extends PreferenceActivity {
 
     private PreferenceCategory actionsCategory;
     private RingtonePreference tonePreference;
-    private SwitchPreference vibratePreference;
-    private SwitchPreference insistentPreference;
+    private Preference vibratePreference;
+    private Preference insistentPreference;
 
     private PreferenceScreen smsScreen;
-    private SwitchPreference smsActivePreference;
+    private Preference smsActivePreference;
     private Preference smsContactPreference;
     private EditTextPreference smsMessagePreference;
 
@@ -103,11 +101,11 @@ public class LocationNotifier extends PreferenceActivity {
 
         actionsCategory = (PreferenceCategory) findPreference("category_actions");
         tonePreference = (RingtonePreference) findPreference("tone");
-        vibratePreference = (SwitchPreference) findPreference("vibrate");
-        insistentPreference = (SwitchPreference) findPreference("insistent");
+        vibratePreference = (Preference) findPreference("vibrate");
+        insistentPreference = (Preference) findPreference("insistent");
 
         smsScreen = (PreferenceScreen) findPreference("screen_sms");
-        smsActivePreference = (SwitchPreference) findPreference("sms_enabled");
+        smsActivePreference = (Preference) findPreference("sms_enabled");
         smsContactPreference = (Preference) findPreference("sms_contact");
         smsMessagePreference = (EditTextPreference) findPreference("sms_message");
 

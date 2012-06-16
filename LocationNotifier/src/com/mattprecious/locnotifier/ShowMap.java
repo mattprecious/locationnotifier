@@ -22,6 +22,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -30,11 +31,14 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.SearchView.OnQueryTextListener;
@@ -94,6 +98,7 @@ public class ShowMap extends SherlockMapActivity {
     private List<Address> searchResults;
 
     private final int DIALOG_ID_SEARCH = 1;
+    private final int DIALOG_ID_SEARCH_RESULTS = 2;
 
     @Override
     protected void onCreate(Bundle icicle) {
@@ -307,7 +312,7 @@ public class ShowMap extends SherlockMapActivity {
         // this needs to be in here so that if the device is rotated while the dialog is open, a
         // second one will be created over top of the existing one. Putting this in onDestroy does
         // nothing for some reason...
-        removeDialog(DIALOG_ID_SEARCH);
+        removeDialog(DIALOG_ID_SEARCH_RESULTS);
     }
 
     @Override
@@ -329,6 +334,25 @@ public class ShowMap extends SherlockMapActivity {
 
         switch (id) {
             case DIALOG_ID_SEARCH:
+                LinearLayout searchDialog = (LinearLayout) LayoutInflater.from(
+                        getApplicationContext()).inflate(R.layout.search_dialog, null);
+                builder.setView(searchDialog);
+                
+                builder.setTitle(R.string.search);
+                builder.setPositiveButton(R.string.ok, new OnClickListener() {
+                    
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int which) {
+                        Dialog dialog = (Dialog) dialogInterface;
+                        EditText queryText = (EditText) dialog.findViewById(R.id.search_dialog_text);
+                        search(queryText.getText().toString());
+                    }
+                });
+
+                dialog = builder.create();
+
+                break;
+            case DIALOG_ID_SEARCH_RESULTS:
                 if (searchResults == null) {
                     return null;
                 }
@@ -345,7 +369,7 @@ public class ShowMap extends SherlockMapActivity {
 
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                removeDialog(DIALOG_ID_SEARCH);
+                                removeDialog(DIALOG_ID_SEARCH_RESULTS);
                             }
                         });
 
@@ -361,7 +385,7 @@ public class ShowMap extends SherlockMapActivity {
                         redraw();
                         moveToDestination();
 
-                        removeDialog(DIALOG_ID_SEARCH);
+                        removeDialog(DIALOG_ID_SEARCH_RESULTS);
                     }
                 });
 
@@ -379,20 +403,23 @@ public class ShowMap extends SherlockMapActivity {
         MenuInflater menuInflater = getSupportMenuInflater();
         menuInflater.inflate(R.menu.map, menu);
 
-        SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
-        searchView.setOnQueryTextListener(new OnQueryTextListener() {
+        // SearchView was added in HC
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
+            searchView.setOnQueryTextListener(new OnQueryTextListener() {
 
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                search(query);
-                return true;
-            }
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+                    search(query);
+                    return true;
+                }
 
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                return false;
-            }
-        });
+                @Override
+                public boolean onQueryTextChange(String newText) {
+                    return false;
+                }
+            });
+        }
 
         return super.onCreateOptionsMenu(menu);
     }
@@ -461,6 +488,13 @@ public class ShowMap extends SherlockMapActivity {
                 }
 
                 return true;
+            case R.id.menu_search:
+                // only need this for pre-HC
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+                    showDialog(DIALOG_ID_SEARCH);
+                }
+
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -482,7 +516,7 @@ public class ShowMap extends SherlockMapActivity {
         searchResults = LocationHelper.stringToAddresses(getApplicationContext(), query);
 
         if (searchResults != null && searchResults.size() > 0) {
-            showDialog(DIALOG_ID_SEARCH);
+            showDialog(DIALOG_ID_SEARCH_RESULTS);
         } else {
             Toast.makeText(getApplicationContext(), R.string.no_results, Toast.LENGTH_SHORT).show();
         }
