@@ -478,6 +478,12 @@ public class ShowMap extends SherlockMapActivity {
 
                 return true;
             case R.id.menu_distance:
+                if (destinationPoint == null) {
+                    Toast.makeText(getApplicationContext(), R.string.no_destination,
+                            Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                
                 stopFollow();
 
                 if (distanceBarPanel.getVisibility() == View.GONE) {

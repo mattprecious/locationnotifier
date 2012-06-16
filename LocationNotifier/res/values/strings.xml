@@ -53,6 +53,7 @@
     
     <string name="hint_toast">Long press to set destination</string>
     <string name="no_results">No results found</string>
+    <string name="no_destination">Please select a destination first. Long press on the screen to set a destination</string>
     <string name="gps_button_on">GPS On</string>
     <string name="gps_button_off">GPS Off</string>
     <string name="save_button">Save</string>
