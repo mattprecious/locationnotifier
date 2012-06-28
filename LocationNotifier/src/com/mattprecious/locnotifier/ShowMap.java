@@ -18,6 +18,7 @@ package com.mattprecious.locnotifier;
 
 import java.util.List;
 
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -404,6 +405,7 @@ public class ShowMap extends SherlockMapActivity {
         return dialog;
     }
 
+    @TargetApi(11)
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getSupportMenuInflater();

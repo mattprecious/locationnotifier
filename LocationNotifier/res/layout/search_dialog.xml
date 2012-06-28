@@ -5,10 +5,11 @@
 
     <EditText
         android:id="@+id/search_dialog_text"
-        android:layout_width="wrap_content"
+        android:layout_width="0dip"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:ems="10" >
+        android:ems="10"
+        android:inputType="textAutoCorrect|textAutoComplete|textPostalAddress" >
 
         <requestFocus />
     </EditText>
