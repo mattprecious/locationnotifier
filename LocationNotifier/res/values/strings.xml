@@ -57,6 +57,8 @@
     <string name="no_destination">Please select a destination first. Long press on the screen to set a destination</string>
     <string name="gps_button_on">GPS On</string>
     <string name="gps_button_off">GPS Off</string>
+    <string name="gps_on_toast">GPS On</string>
+    <string name="gps_off_toast">GPS Off</string>
     <string name="save_button">Save</string>
     <string name="distance_button">Distance</string>
     <string name="my_location_button">My Location</string>

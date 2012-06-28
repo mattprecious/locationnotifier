@@ -477,11 +477,15 @@ public class ShowMap extends SherlockMapActivity {
                 return true;
             case R.id.menu_gps_on:
                 gpsEnabled = false;
+                Toast.makeText(getApplicationContext(), R.string.gps_off_toast, Toast.LENGTH_SHORT)
+                        .show();
                 invalidateOptionsMenu();
 
                 return true;
             case R.id.menu_gps_off:
                 gpsEnabled = true;
+                Toast.makeText(getApplicationContext(), R.string.gps_on_toast, Toast.LENGTH_SHORT)
+                        .show();
                 invalidateOptionsMenu();
 
                 return true;
