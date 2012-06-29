@@ -660,12 +660,28 @@ public class ShowMap extends SherlockMapActivity {
         @Override
         protected Void doInBackground(Void... params) {
             while (!this.isCancelled()) {
+                // progress bar has a size of 9, so 4 is the midpoint
+                // don't do anything in the middle
+                if (distanceBar.getProgress() == 4) {
+                    continue;
+                }
+                
+                // get absolute difference
                 long modifier = Math.abs(distanceBar.getProgress() - 4);
-                long adjustedModifier = (long) Math.pow(2, modifier);
-                long signedModifier = distanceBar.getProgress() < 4 ? -adjustedModifier
-                        : adjustedModifier;
 
-                distance = Math.max(distance + signedModifier, MIN_DISTANCE);
+                // adjust to exponential growth
+                modifier = (long) Math.pow(2, modifier);
+
+                // bring in negation
+                modifier = distanceBar.getProgress() < 4 ? -modifier : modifier;
+
+                // adjust based on zoom level
+                // zoom level increases as you zoom in, we want to flip this around so the more
+                // zoomed in you are, the less impact it has on the distance slider
+                int invertedZoom = mapView.getMaxZoomLevel() - mapView.getZoomLevel() + 1;
+                modifier = (long) (modifier * Math.pow(2, invertedZoom - 3));
+
+                distance = Math.max(distance + modifier, MIN_DISTANCE);
                 destinationRadius = new RadiusOverlay(destinationPoint.getPoint(), distance,
                         PointType.DESTINATION);
 
