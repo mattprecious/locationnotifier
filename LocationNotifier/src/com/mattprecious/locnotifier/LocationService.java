@@ -31,6 +31,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
+import android.support.v4.app.NotificationCompat;
 import android.telephony.SmsManager;
 import android.util.Log;
 
@@ -44,6 +45,8 @@ public class LocationService extends Service {
     private SharedPreferences preferences;
 
     private NotificationManager notificationManager;
+    private Notification runningNotification;
+
     private LocationManager locationManager;
     private LocationListener locationListener;
 
@@ -143,23 +146,22 @@ public class LocationService extends Service {
 
         locationManager.removeUpdates(locationListener);
 
-        PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0,
-                new Intent(), 0);
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(), 0);
 
         String notifTitle = getString(R.string.notification_alert_title);
         String notifText = getString(R.string.notification_alert_text);
 
-        Notification notification = new Notification(R.drawable.notification_alert, notifTitle,
-                System.currentTimeMillis());
-        notification.setLatestEventInfo(getApplicationContext(), notifTitle, notifText,
-                contentIntent);
-        notification.flags |= Notification.FLAG_AUTO_CANCEL;
+        runningNotification = null;
+
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this);
+        notificationBuilder.setSmallIcon(R.drawable.notification_alert).setContentTitle(notifTitle)
+                .setContentText(notifText).setContentIntent(contentIntent).setAutoCancel(true);
 
         String tone = preferences.getString("tone", null);
         Uri toneUri = (tone == null) ? RingtoneManager
                 .getDefaultUri(RingtoneManager.TYPE_NOTIFICATION) : Uri.parse(tone);
 
-        notification.sound = toneUri;
+        notificationBuilder.setSound(toneUri);
 
         if (preferences.getBoolean("vibrate", false)) {
             int shortVib = 150;
@@ -168,14 +170,12 @@ public class LocationService extends Service {
             // vibrate 3 short times
             long[] pattern = { 0, shortVib, shortPause, shortVib, shortPause, shortVib, };
 
-            notification.vibrate = pattern;
+            notificationBuilder.setVibrate(pattern);
         }
 
-        notification.flags |= Notification.FLAG_SHOW_LIGHTS;
-        notification.ledARGB = 0xffff0000;
-        notification.ledOnMS = 500;
-        notification.ledOffMS = 500;
+        notificationBuilder.setLights(0xffff0000, 500, 500);
 
+        Notification notification = notificationBuilder.getNotification();
         if (preferences.getBoolean("insistent", false)) {
             notification.flags |= Notification.FLAG_INSISTENT;
         }
@@ -214,14 +214,22 @@ public class LocationService extends Service {
                     getString(distanceStrId, displayDistance));
         }
 
-        Notification runningNotification = new Notification(R.drawable.notification_running, null,
-                0);
+        String title = getString(R.string.app_name);
 
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this,
                 LocationNotifier.class), 0);
-        runningNotification.setLatestEventInfo(this, getString(R.string.app_name), message,
-                contentIntent);
-        startForeground(R.string.app_name, runningNotification);
-    }
 
+        if (runningNotification == null) {
+            runningNotification = new NotificationCompat.Builder(this)
+                    .setSmallIcon(R.drawable.notification_running).setContentTitle(title)
+                    .setContentText(message).setContentIntent(contentIntent).setOnlyAlertOnce(true)
+                    .getNotification();
+
+            startForeground(R.string.app_name, runningNotification);
+        } else {
+            // TODO: Figure out how to do this without using the deprecated setLatestEventInfo
+            runningNotification.setLatestEventInfo(this, title, message, contentIntent);
+            notificationManager.notify(R.string.app_name, runningNotification);
+        }
+    }
 }
