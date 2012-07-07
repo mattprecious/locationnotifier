@@ -109,8 +109,7 @@ public class ShowMap extends SherlockMapActivity {
         super.onCreate(icicle);
         setContentView(R.layout.map);
 
-        // ActionBar actionBar = getSupportActionBar();
-        // actionBar.setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Bundle extras = getIntent().getExtras();
 
@@ -449,6 +448,12 @@ public class ShowMap extends SherlockMapActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case android.R.id.home:
+                Intent intent = new Intent(this, LocationNotifier.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();
+                return true;
             case R.id.menu_save:
                 Editor editor = preferences.edit();
 
@@ -665,7 +670,7 @@ public class ShowMap extends SherlockMapActivity {
                 if (distanceBar.getProgress() == 4) {
                     continue;
                 }
-                
+
                 // get absolute difference
                 long modifier = Math.abs(distanceBar.getProgress() - 4);
 
