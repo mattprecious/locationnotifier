@@ -16,6 +16,7 @@
 
 package com.mattprecious.locnotifier;
 
+import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -28,6 +29,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
@@ -62,10 +64,9 @@ public class LocationService extends Service {
         super.onCreate();
 
         LocationService.isRunning = true;
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         updateRunningNotification();
-
-        preferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         int lat = preferences.getInt("dest_lat", 0);
         int lng = preferences.getInt("dest_lng", 0);
@@ -200,6 +201,7 @@ public class LocationService extends Service {
         updateRunningNotification(-1);
     }
 
+    @TargetApi(16)
     private void updateRunningNotification(float distance) {
         String message;
         if (distance == -1) {
@@ -224,6 +226,14 @@ public class LocationService extends Service {
                     .setSmallIcon(R.drawable.notification_running).setContentTitle(title)
                     .setContentText(message).setContentIntent(contentIntent).setOnlyAlertOnce(true)
                     .getNotification();
+            
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                if (preferences.getString("notification_priority", "low").equals("low")) {
+                    runningNotification.priority = Notification.PRIORITY_MIN;
+                } else {
+                    runningNotification.priority = Notification.PRIORITY_HIGH;
+                }
+            }
 
             startForeground(R.string.app_name, runningNotification);
         } else {

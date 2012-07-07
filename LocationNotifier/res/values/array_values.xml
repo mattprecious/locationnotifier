@@ -1,0 +1,6 @@
+<resources>
+	<string-array name="notification_priority_values">
+		<item>high</item>
+		<item>low</item>
+	</string-array>
+</resources>

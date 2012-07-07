@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- NOTE: Copied in xml/main.xml TODO: Don't do this -->
+<!-- NOTE: Copied in xml/main.xml and xml-v16/main.xml TODO: Don't do this -->
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:key="preferences" >
 
@@ -40,7 +40,7 @@
         </PreferenceScreen>
         <PreferenceScreen
             android:key="screen_notification"
-            android:title="@string/category_notification" >
+            android:title="@string/screen_notification" >
             <PreferenceCategory android:title="@string/category_notification" >
                 <RingtonePreference
                     android:key="tone"

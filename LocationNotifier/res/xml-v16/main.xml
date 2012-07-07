@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- NOTE: Copied in xml-v14/main.xml and xml-v16/main.xml TODO: Don't do this -->
+<!-- NOTE: Copied in xml/main.xml and xml-v14/main.xml TODO: Don't do this -->
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:key="preferences" >
 
@@ -23,7 +23,7 @@
             android:key="screen_sms"
             android:title="@string/category_sms" >
             <PreferenceCategory android:title="@string/category_sms" >
-                <CheckBoxPreference
+                <SwitchPreference
                     android:key="sms_enabled"
                     android:title="@string/sms_enabled" />
 
@@ -41,6 +41,14 @@
         <PreferenceScreen
             android:key="screen_notification"
             android:title="@string/screen_notification" >
+            <PreferenceCategory android:title="@string/category_notification_tracking" >
+                <ListPreference
+                    android:defaultValue="low"
+                    android:entries="@array/notification_priority_text"
+                    android:entryValues="@array/notification_priority_values"
+                    android:key="notification_priority"
+                    android:title="@string/notification_priority" />
+            </PreferenceCategory>
             <PreferenceCategory android:title="@string/category_notification" >
                 <RingtonePreference
                     android:key="tone"
@@ -49,20 +57,26 @@
                     android:showSilent="true"
                     android:title="@string/action_tone" />
 
-                <CheckBoxPreference
+                <SwitchPreference
                     android:key="vibrate"
+                    android:switchTextOff="@string/switch_no"
+                    android:switchTextOn="@string/switch_yes"
                     android:title="@string/action_vibrate" />
-                <CheckBoxPreference
+                <SwitchPreference
                     android:key="insistent"
                     android:summary="@string/action_insistent_summary"
+                    android:switchTextOff="@string/switch_no"
+                    android:switchTextOn="@string/switch_yes"
                     android:title="@string/action_insistent" />
             </PreferenceCategory>
         </PreferenceScreen>
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/category_options" >
-        <CheckBoxPreference
+        <SwitchPreference
             android:defaultValue="0"
             android:key="imperial"
+            android:switchTextOff="@string/switch_no"
+            android:switchTextOn="@string/switch_yes"
             android:title="@string/options_imperial" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/category_more" >

@@ -18,8 +18,11 @@
     <string name="status_go">Go!</string>
     <string name="status_stop">Stop</string>
     
-    <string name="category_notification">Notification</string>
+    <string name="screen_notification">Notifications</string>
+    <string name="category_notification">Arrival Notification</string>
+    <string name="category_notification_tracking">Tracking Notification</string>
     <string name="action_tone">Notification Ringtone</string>
+    <string name="notification_priority">Notification Priority</string>
     <string name="action_vibrate">Vibrate</string>
     <string name="action_insistent">Insistent</string>
     <string name="action_insistent_summary">Play sound repeatedly until you respond</string>
