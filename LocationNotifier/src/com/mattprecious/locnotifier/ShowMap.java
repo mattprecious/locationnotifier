@@ -563,7 +563,7 @@ public class ShowMap extends SherlockMapActivity {
 
     private void startFollow() {
         followLocation = true;
-        invalidateOptionsMenu();
+        supportInvalidateOptionsMenu();
     }
 
     private void stopFollow() {
@@ -572,7 +572,7 @@ public class ShowMap extends SherlockMapActivity {
         // again. It's really annoying.
         if (followLocation) {
             followLocation = false;
-            invalidateOptionsMenu();
+            supportInvalidateOptionsMenu();
         }
     }
 
