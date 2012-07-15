@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="change_log">
-    	<ul>
-    		<li>Send an SMS message when approaching your destination</li>
-    	</ul>
+    	\n&#8226; Action Bar!
+        \n&#8226; Search!
+        \n&#8226; Brand new distance slider
+        \n&#8226; Notification priority (JB)
+        \n&#8226; "Share" a location from Google Maps (or other applications)
+        \n&#8226; Imperial units
+        \n&#8226; Translation link
+        \n&#8226; Other minor additions and tweaks
     </string>
 </resources>
